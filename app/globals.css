@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-varela);
+  --font-mono: var(--font-geist-mono);
+}
+
+:root {
+  --background: #171717;
+  --foreground: #ffffff;
+}
+
+@layer base {
+  .glass {
+    @apply bg-white/10 backdrop-blur-sm border border-white/5 shadow-lg;
+  }
+
+  .glass-card {
+    @apply bg-white/10 backdrop-blur-sm border border-white/5 rounded-lg shadow-lg p-4;
+  }
+
+  .glass-navbar {
+    @apply bg-white/5 backdrop-blur-sm border-b border-white/5 shadow-lg rounded-b-2xl;
+  }
+
+  .app {
+    @apply relative p-2 rounded-xl cursor-pointer select-none;
+    @apply transition-all duration-150 ease-out;
+
+    /* Acrylic */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.12),
+      0 8px 32px rgba(0, 0, 0, 0.25);
+  }
+
+  .app::before,
+  .tooltip::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+
+    opacity: 1;
+    transition: opacity 0.15s ease;
+  }
+
+  /* Hover */
+  .app:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.22);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 12px 36px rgba(0, 0, 0, 0.35);
+
+    transform: translateY(-4px);
+  }
+
+  .app:hover::before {
+    opacity: 1;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.18) 0%,
+      rgba(255, 255, 255, 0.08) 40%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+  }
+
+  /* Pressed */
+  .app:active {
+    background: rgba(255, 255, 255, 0.16);
+    border-color: rgba(255, 255, 255, 0.28);
+
+    box-shadow:
+      inset 0 2px 6px rgba(0, 0, 0, 0.15),
+      0 4px 14px rgba(0, 0, 0, 0.2);
+
+    transform: scale(0.96);
+  }
+
+  /* Keyboard focus */
+  .app:focus-visible {
+    outline: none;
+
+    border-color: rgb(96 165 250);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 0 0 2px rgba(96, 165, 250, 0.45),
+      0 10px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Disabled */
+  .app:disabled,
+  .app[aria-disabled="true"] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      0 2px 8px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Icon */
+  .app svg {
+    @apply size-5;
+    transition:
+      transform 0.15s ease,
+      opacity 0.15s ease;
+  }
+
+  .app:hover svg {
+    transform: scale(1.05);
+  }
+
+  .app:active svg {
+    transform: scale(0.95);
+  }
+
+  .app::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+
+    width: 16px;
+    height: 3px;
+    border-radius: 9999px;
+
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(8px);
+
+    transition:
+      transform 0.18s ease,
+      opacity 0.18s ease;
+
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .app.open::after {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+/* --- Premium Glass Scrollbar Styling --- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Universal scrollbar style for Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+/* Hide scrollbars class */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
