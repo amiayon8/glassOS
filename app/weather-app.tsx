@@ -22,7 +22,6 @@ import {
 } from "react-icons/bs";
 import { WiSunset, WiSunrise } from "react-icons/wi";
 
-// Coordinates and details for default search cities
 const PRESET_CITIES = [
   { name: "Vilnius", country: "Lithuania", lat: 54.6872, lon: 25.2797 },
   { name: "Cupertino", country: "United States", lat: 37.323, lon: -122.0322 },
@@ -32,7 +31,6 @@ const PRESET_CITIES = [
   { name: "Sydney", country: "Australia", lat: -33.8688, lon: 151.2093 },
 ];
 
-// Helper to translate weather codes to text, icon, and colors
 const getWeatherDetails = (code: number) => {
   if (code === 0) {
     return {
@@ -41,7 +39,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-amber-400",
       gradient: "from-sky-400/20 to-blue-600/30",
       bgStyle:
-        "bg-gradient-to-br from-sky-500/20 via-sky-600/10 to-indigo-950/30",
+        "bg-linear-to-br from-sky-500/20 via-sky-600/10 to-indigo-950/30",
     };
   }
   if ([1, 2, 3].includes(code)) {
@@ -51,7 +49,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-gray-300",
       gradient: "from-blue-500/20 to-slate-600/20",
       bgStyle:
-        "bg-gradient-to-br from-blue-600/15 via-slate-700/10 to-zinc-900/30",
+        "bg-linear-to-br from-blue-600/15 via-slate-700/10 to-zinc-900/30",
     };
   }
   if ([45, 48].includes(code)) {
@@ -61,7 +59,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-slate-400",
       gradient: "from-zinc-500/25 to-slate-700/25",
       bgStyle:
-        "bg-gradient-to-br from-zinc-700/20 via-slate-800/10 to-stone-900/35",
+        "bg-linear-to-br from-zinc-700/20 via-slate-800/10 to-stone-900/35",
     };
   }
   if ([51, 53, 55].includes(code)) {
@@ -71,7 +69,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-blue-300",
       gradient: "from-slate-600/25 to-blue-800/25",
       bgStyle:
-        "bg-gradient-to-br from-slate-600/20 via-blue-900/10 to-zinc-950/40",
+        "bg-linear-to-br from-slate-600/20 via-blue-900/10 to-zinc-950/40",
     };
   }
   if ([61, 63, 65, 80, 81, 82].includes(code)) {
@@ -81,7 +79,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-blue-400",
       gradient: "from-slate-700/30 to-blue-900/30",
       bgStyle:
-        "bg-gradient-to-br from-slate-800/25 via-blue-950/15 to-neutral-950/45",
+        "bg-linear-to-br from-slate-800/25 via-blue-950/15 to-neutral-950/45",
     };
   }
   if ([71, 73, 75, 77, 85, 86].includes(code)) {
@@ -91,7 +89,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-sky-200",
       gradient: "from-blue-100/10 to-indigo-900/20",
       bgStyle:
-        "bg-gradient-to-br from-blue-300/10 via-indigo-950/15 to-zinc-950/35",
+        "bg-linear-to-br from-blue-300/10 via-indigo-950/15 to-zinc-950/35",
     };
   }
   if ([95, 96, 99].includes(code)) {
@@ -101,7 +99,7 @@ const getWeatherDetails = (code: number) => {
       color: "text-yellow-400",
       gradient: "from-yellow-950/20 to-zinc-950/40",
       bgStyle:
-        "bg-gradient-to-br from-zinc-900/30 via-yellow-950/10 to-black/50",
+        "bg-linear-to-br from-zinc-900/30 via-yellow-950/10 to-black/50",
     };
   }
   return {
@@ -110,18 +108,16 @@ const getWeatherDetails = (code: number) => {
     color: "text-gray-300",
     gradient: "from-zinc-500/20 to-zinc-700/20",
     bgStyle:
-      "bg-gradient-to-br from-slate-700/20 via-zinc-800/10 to-neutral-900/30",
+      "bg-linear-to-br from-slate-700/20 via-zinc-800/10 to-neutral-900/30",
   };
 };
 
-// Formatter helper for dates/times
 const getDayLabel = (dateStr: string, index: number) => {
   if (index === 0) return "Today";
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", { weekday: "short" });
 };
 
-// Format hour label
 const formatHour = (timeStr: string) => {
   const date = new Date(timeStr);
   const hours = date.getHours();
@@ -193,7 +189,6 @@ export default function WeatherApp() {
     }
   };
 
-  // Load saved location on mount or run geolocation as fallback
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -216,7 +211,6 @@ export default function WeatherApp() {
     }
   }, []);
 
-  // Sync to localStorage effects
   useEffect(() => {
     if (typeof window !== "undefined" && selectedCity) {
       localStorage.setItem(
@@ -235,7 +229,6 @@ export default function WeatherApp() {
     }
   }, [isMyLocationSelected]);
 
-  // Search cities handler using Open-Meteo geocoding API
   useEffect(() => {
     if (!query.trim()) {
       setSearchResults([]);
@@ -264,7 +257,6 @@ export default function WeatherApp() {
     return () => clearTimeout(delayDebounceFn);
   }, [query]);
 
-  // Fetch forecast data whenever selectedCity updates
   useEffect(() => {
     const fetchWeather = async () => {
       setLoading(true);
@@ -285,7 +277,6 @@ export default function WeatherApp() {
         console.error("Weather fetch error:", err);
         setError("Unable to connect to weather service. Using simulated data.");
 
-        // Setup high-fidelity mock data as a robust fallback
         setWeatherData(
           generateMockData(selectedCity.name, selectedCity.country),
         );
@@ -297,13 +288,11 @@ export default function WeatherApp() {
     fetchWeather();
   }, [selectedCity]);
 
-  // Generate fallback mock data
   const generateMockData = (cityName: string, country: string) => {
     const tempBase =
       cityName === "Vilnius" ? 18 : cityName === "Sydney" ? 14 : 22;
     const now = new Date();
 
-    // Hourly
     const hourlyTimes: string[] = [];
     const hourlyTemps: number[] = [];
     const hourlyCodes: number[] = [];
@@ -325,7 +314,6 @@ export default function WeatherApp() {
       hourlyUV.push(Math.max(0, Math.round(5 * factor + 5)));
     }
 
-    // Daily
     const dailyTimes: string[] = [];
     const dailyMaxTemps: number[] = [];
     const dailyMinTemps: number[] = [];
@@ -404,9 +392,9 @@ export default function WeatherApp() {
 
   if (loading && !weatherData) {
     return (
-      <div className="flex justify-center items-center h-full bg-zinc-950/30 backdrop-blur-md text-white">
+      <div className="flex justify-center items-center bg-zinc-950/30 backdrop-blur-md h-full text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-t-blue-500 border-white/20 rounded-full animate-spin"></div>
+          <div className="border-4 border-white/20 border-t-blue-500 rounded-full w-10 h-10 animate-spin"></div>
           <p className="font-medium text-white/60 text-sm">
             Loading weather forecast...
           </p>
@@ -415,23 +403,19 @@ export default function WeatherApp() {
     );
   }
 
-  // Retrieve current, daily and hourly indices
   const current = weatherData?.current;
   const hourly = weatherData?.hourly;
   const daily = weatherData?.daily;
   const currentDetails = getWeatherDetails(current?.weather_code ?? 0);
 
-  // Compute absolute 10-day range for range bar
   const globalMin = daily ? Math.min(...daily.temperature_2m_min) : 0;
   const globalMax = daily ? Math.max(...daily.temperature_2m_max) : 35;
   const globalSpan = globalMax - globalMin || 1;
 
-  // Approximate dew point
   const tempC = current?.temperature_2m || 0;
   const humPct = current?.relative_humidity_2m || 50;
   const dewPoint = Math.round(tempC - (100 - humPct) / 5);
 
-  // Compass rotation for wind
   const windDir = current?.wind_direction_10m || 0;
   const getWindDirection = (degree: number) => {
     const sectors = [
@@ -456,7 +440,6 @@ export default function WeatherApp() {
     return sectors[index];
   };
 
-  // UV Exposure Description
   const uvVal = daily?.uv_index_max?.[0] || 0;
   const getUvDescriptor = (uv: number) => {
     if (uv <= 2) return "Low";
@@ -470,8 +453,7 @@ export default function WeatherApp() {
     <div
       className={`flex flex-col h-full overflow-y-auto text-white select-none transition-all duration-700 ${currentDetails.bgStyle}`}
     >
-      {/* Top Search Bar */}
-      <div className="relative z-50 flex items-center gap-3 p-4 shrink-0">
+      <div className="z-50 relative flex items-center gap-3 p-4 shrink-0">
         <div className="relative flex-1">
           <BsSearch className="top-1/2 left-4 absolute text-white/40 -translate-y-1/2" />
           <input
@@ -479,31 +461,30 @@ export default function WeatherApp() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search for cities..."
-            className="bg-white/10 focus:bg-white/15 backdrop-blur-md pl-11 pr-4 py-2.5 border border-white/10 focus:border-white/20 rounded-full w-full outline-none text-white placeholder:text-white/40 text-sm transition-all shadow-inner"
+            className="bg-white/10 focus:bg-white/15 shadow-inner backdrop-blur-md py-2.5 pr-4 pl-11 border border-white/10 focus:border-white/20 rounded-full outline-none w-full text-white placeholder:text-white/40 text-sm transition-all"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="top-1/2 right-4 absolute hover:bg-white/10 p-1 rounded-full text-white/50 hover:text-white -translate-y-1/2 text-xs"
+              className="top-1/2 right-4 absolute hover:bg-white/10 p-1 rounded-full text-white/50 hover:text-white text-xs -translate-y-1/2"
             >
               ✕
             </button>
           )}
 
-          {/* Search Dropdown / Autocomplete */}
           {searchResults.length > 0 && (
-            <div className="left-0 right-0 top-full absolute bg-zinc-950/80 backdrop-blur-xl mt-2 border border-white/10 rounded-2xl overflow-hidden shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+            <div className="top-full right-0 left-0 z-50 absolute bg-zinc-950/80 slide-in-from-top-2 shadow-2xl backdrop-blur-xl mt-2 border border-white/10 rounded-2xl overflow-hidden animate-in duration-150 fade-in">
               {searchResults.map((city: any, idx: number) => (
                 <button
                   key={`${city.id || idx}`}
                   onClick={() => selectCityHandler(city)}
-                  className="flex justify-between items-center hover:bg-white/10 px-5 py-3.5 w-full text-left transition-colors border-white/5 border-b last:border-0"
+                  className="flex justify-between items-center hover:bg-white/10 px-5 py-3.5 border-white/5 last:border-0 border-b w-full text-left transition-colors"
                 >
                   <div className="flex flex-col">
-                    <span className="font-semibold text-sm text-white">
+                    <span className="font-semibold text-white text-sm">
                       {city.name}
                     </span>
-                    <span className="text-white/50 text-xs mt-0.5">
+                    <span className="mt-0.5 text-white/50 text-xs">
                       {city.admin1 ? `${city.admin1}, ` : ""}
                       {city.country}
                     </span>
@@ -517,21 +498,19 @@ export default function WeatherApp() {
           )}
 
           {isSearching && (
-            <div className="right-4 top-1/2 absolute -translate-y-1/2 flex items-center">
-              <div className="w-4 h-4 border-2 border-t-white/80 border-white/20 rounded-full animate-spin"></div>
+            <div className="top-1/2 right-4 absolute flex items-center -translate-y-1/2">
+              <div className="border-2 border-white/20 border-t-white/80 rounded-full w-4 h-4 animate-spin"></div>
             </div>
           )}
         </div>
 
-        {/* Preset Cities Shortcut */}
-        <div className="hidden md:flex gap-1.5 overflow-x-auto no-scrollbar shrink-0 select-none">
+        <div className="hidden md:flex gap-1.5 overflow-x-auto select-none no-scrollbar shrink-0">
           <button
             onClick={detectMyLocation}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all flex items-center gap-1 shrink-0 ${
-              isMyLocationSelected
-                ? "bg-blue-500/25 text-white border border-blue-500/25 shadow-md"
-                : "bg-white/5 hover:bg-white/10 text-white/70 border border-white/5"
-            }`}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all flex items-center gap-1 shrink-0 ${isMyLocationSelected
+              ? "bg-blue-500/25 text-white border border-blue-500/25 shadow-md"
+              : "bg-white/5 hover:bg-white/10 text-white/70 border border-white/5"
+              }`}
           >
             📍 My Location
           </button>
@@ -542,11 +521,10 @@ export default function WeatherApp() {
                 setSelectedCity(city);
                 setIsMyLocationSelected(false);
               }}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all shrink-0 ${
-                !isMyLocationSelected && selectedCity.name === city.name
-                  ? "bg-white/25 text-white border border-white/25 shadow-md"
-                  : "bg-white/5 hover:bg-white/10 text-white/70 border border-white/5"
-              }`}
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all shrink-0 ${!isMyLocationSelected && selectedCity.name === city.name
+                ? "bg-white/25 text-white border border-white/25 shadow-md"
+                : "bg-white/5 hover:bg-white/10 text-white/70 border border-white/5"
+                }`}
             >
               {city.name}
             </button>
@@ -555,43 +533,40 @@ export default function WeatherApp() {
       </div>
 
       {error && (
-        <div className="bg-amber-500/10 mx-4 border border-amber-500/25 px-4 py-2.5 rounded-xl text-amber-300 text-xs font-medium select-none shrink-0 mb-2">
+        <div className="bg-amber-500/10 mx-4 mb-2 px-4 py-2.5 border border-amber-500/25 rounded-xl font-medium text-amber-300 text-xs select-none shrink-0">
           ⚠️ {error}
         </div>
       )}
 
-      {/* Weather Contents Scrollable Area */}
-      <div className="flex-1 px-4 pb-6 overflow-y-auto space-y-4">
-        {/* Main Hero Weather Card */}
-        <div className="flex flex-col items-center text-center py-6 select-none relative z-10">
-          <h2 className="font-bold text-3xl tracking-wide drop-shadow-md text-white">
+      <div className="flex-1 space-y-4 px-4 pb-6 overflow-y-auto">
+        <div className="z-10 relative flex flex-col items-center py-6 text-center select-none">
+          <h2 className="drop-shadow-md font-bold text-white text-3xl tracking-wide">
             {selectedCity.name}
           </h2>
-          <p className="text-white/70 text-sm font-medium drop-shadow-sm mt-1">
+          <p className="drop-shadow-sm mt-1 font-medium text-white/70 text-sm">
             {selectedCity.country}
           </p>
-          <div className="flex items-start justify-center mt-3 ml-4 select-none">
-            <span className="font-light text-7xl tracking-tighter drop-shadow-md text-white">
+          <div className="flex justify-center items-start mt-3 ml-4 select-none">
+            <span className="drop-shadow-md font-light text-white text-7xl tracking-tighter">
               {Math.round(current?.temperature_2m ?? 0)}
             </span>
-            <span className="font-light text-3xl mt-1 drop-shadow-sm">°</span>
+            <span className="drop-shadow-sm mt-1 font-light text-3xl">°</span>
           </div>
-          <p className="font-semibold text-lg drop-shadow-sm mt-1 text-white/90">
+          <p className="drop-shadow-sm mt-1 font-semibold text-white/90 text-lg">
             {currentDetails.label}
           </p>
-          <div className="flex gap-3 text-white/80 font-medium text-sm mt-1">
+          <div className="flex gap-3 mt-1 font-medium text-white/80 text-sm">
             <span>H: {Math.round(daily?.temperature_2m_max?.[0] ?? 0)}°</span>
             <span>L: {Math.round(daily?.temperature_2m_min?.[0] ?? 0)}°</span>
           </div>
         </div>
 
-        {/* Hourly Forecast Widget */}
         {hourly && (
-          <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl select-none">
-            <h3 className="text-white/40 text-xs font-semibold tracking-wider uppercase mb-3 flex items-center gap-1.5">
+          <div className="bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
+            <h3 className="flex items-center gap-1.5 mb-3 font-semibold text-white/40 text-xs uppercase tracking-wider">
               <BsSunFill className="text-white/40" /> 24-Hour Forecast
             </h3>
-            <div className="flex gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar scroll-smooth">
+            <div className="flex gap-4 pt-1 pb-2 overflow-x-auto scroll-smooth no-scrollbar">
               {hourly.time.slice(0, 24).map((time: string, idx: number) => {
                 const temp = hourly.temperature_2m[idx];
                 const code = hourly.weather_code[idx];
@@ -603,18 +578,18 @@ export default function WeatherApp() {
                 return (
                   <div
                     key={time}
-                    className="flex flex-col items-center min-w-14 select-none text-center"
+                    className="flex flex-col items-center min-w-14 text-center select-none"
                   >
-                    <span className="text-xs font-medium text-white/60 mb-2 whitespace-nowrap">
+                    <span className="mb-2 font-medium text-white/60 text-xs whitespace-nowrap">
                       {isNow ? "Now" : formatHour(time)}
                     </span>
                     <IconComponent
                       className={`size-6 my-1.5 ${details.color} drop-shadow-sm`}
                     />
-                    <span className="text-[10px] text-sky-300 font-bold h-3 min-h-3">
+                    <span className="h-3 min-h-3 font-bold text-[10px] text-sky-300">
                       {precipProb > 0 ? `${precipProb}%` : ""}
                     </span>
-                    <span className="text-sm font-semibold text-white/90 mt-1">
+                    <span className="mt-1 font-semibold text-white/90 text-sm">
                       {Math.round(temp)}°
                     </span>
                   </div>
@@ -624,12 +599,11 @@ export default function WeatherApp() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-          {/* 10-Day Forecast Widget */}
+        <div className="gap-4 grid grid-cols-1 lg:grid-cols-12">
           {daily && (
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl select-none lg:col-span-6 flex flex-col h-full justify-between">
+            <div className="flex flex-col justify-between lg:col-span-6 bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl h-full select-none">
               <div>
-                <h3 className="text-white/40 text-xs font-semibold tracking-wider uppercase mb-3 flex items-center gap-1.5">
+                <h3 className="flex items-center gap-1.5 mb-3 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   📅 10-Day Forecast
                 </h3>
                 <div className="divide-y divide-white/5">
@@ -640,42 +614,39 @@ export default function WeatherApp() {
                     const details = getWeatherDetails(code);
                     const IconComponent = details.icon;
 
-                    // Compute percentages for range bar
                     const leftPct = ((min - globalMin) / globalSpan) * 100;
                     const rightPct = ((max - globalMin) / globalSpan) * 100;
                     const widthPct = rightPct - leftPct;
 
-                    // If today, calculate current position dot
                     const isToday = idx === 0;
                     const currentPct =
                       isToday && current
                         ? ((current.temperature_2m - globalMin) / globalSpan) *
-                          100
+                        100
                         : 0;
 
                     return (
                       <div
                         key={time}
-                        className="flex items-center justify-between py-3 gap-2"
+                        className="flex justify-between items-center gap-2 py-3"
                       >
-                        <span className="text-sm font-semibold text-white/80 w-16">
+                        <span className="w-16 font-semibold text-white/80 text-sm">
                           {getDayLabel(time, idx)}
                         </span>
 
-                        <div className="flex items-center justify-center w-8">
+                        <div className="flex justify-center items-center w-8">
                           <IconComponent
                             className={`size-5 ${details.color}`}
                           />
                         </div>
 
-                        <span className="text-sm font-semibold text-white/50 text-right w-8">
+                        <span className="w-8 font-semibold text-white/50 text-sm text-right">
                           {Math.round(min)}°
                         </span>
 
-                        {/* Temperature Bar Track */}
-                        <div className="relative flex-1 h-2 bg-black/25 rounded-full overflow-visible mx-2">
+                        <div className="relative flex-1 bg-black/25 mx-2 rounded-full h-2 overflow-visible">
                           <div
-                            className="absolute h-full rounded-full bg-gradient-to-r from-blue-400 via-emerald-400 to-amber-400 shadow-[0_0_8px_rgba(52,211,153,0.3)]"
+                            className="absolute bg-linear-to-r from-blue-400 via-emerald-400 to-amber-400 shadow-[0_0_8px_rgba(52,211,153,0.3)] rounded-full h-full"
                             style={{
                               left: `${leftPct}%`,
                               width: `${Math.max(4, widthPct)}%`,
@@ -683,13 +654,13 @@ export default function WeatherApp() {
                           />
                           {isToday && (
                             <div
-                              className="absolute top-1/2 w-3 h-3 bg-white border-2 border-emerald-500 rounded-full -translate-x-1/2 -translate-y-1/2 shadow-md z-10"
+                              className="top-1/2 z-10 absolute bg-white shadow-md border-2 border-emerald-500 rounded-full w-3 h-3 -translate-x-1/2 -translate-y-1/2"
                               style={{ left: `${currentPct}%` }}
                             />
                           )}
                         </div>
 
-                        <span className="text-sm font-semibold text-white/90 text-right w-8">
+                        <span className="w-8 font-semibold text-white/90 text-sm text-right">
                           {Math.round(max)}°
                         </span>
                       </div>
@@ -700,31 +671,29 @@ export default function WeatherApp() {
             </div>
           )}
 
-          {/* Grid of Weather Detail Cards */}
-          <div className="lg:col-span-6 grid grid-cols-2 gap-4">
-            {/* UV INDEX */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+          <div className="gap-4 grid grid-cols-2 lg:col-span-6">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   ☀️ UV Index
                 </h4>
-                <div className="text-3xl font-light text-white">{uvVal}</div>
-                <div className="text-sm font-semibold text-white/90 mt-1">
+                <div className="font-light text-white text-3xl">{uvVal}</div>
+                <div className="mt-1 font-semibold text-white/90 text-sm">
                   {getUvDescriptor(uvVal)}
                 </div>
               </div>
               <div className="mt-4">
-                <div className="relative h-1.5 bg-black/20 rounded-full overflow-hidden w-full">
+                <div className="relative bg-black/20 rounded-full w-full h-1.5 overflow-hidden">
                   <div
-                    className="absolute h-full bg-gradient-to-r from-emerald-500 via-yellow-500 via-orange-500 to-red-500"
+                    className="absolute bg-linear-to-r from-emerald-500 via-orange-500 via-yellow-500 to-red-500 h-full"
                     style={{ width: "100%" }}
                   />
                   <div
-                    className="absolute top-0 bottom-0 w-1.5 bg-white border border-black rounded-full"
+                    className="top-0 bottom-0 absolute bg-white border border-black rounded-full w-1.5"
                     style={{ left: `${Math.min(100, (uvVal / 12) * 100)}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-white/40 mt-2">
+                <p className="mt-2 text-[10px] text-white/40">
                   {uvVal <= 2
                     ? "No protection needed."
                     : "Wear sunscreen & sunglasses."}
@@ -732,34 +701,33 @@ export default function WeatherApp() {
               </div>
             </div>
 
-            {/* WIND */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   <BsWind className="text-white/40" /> Wind
                 </h4>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-3xl font-light text-white">
+                  <span className="font-light text-white text-3xl">
                     {Math.round(current?.wind_speed_10m ?? 0)}
                   </span>
-                  <span className="text-xs font-semibold text-white/60">
+                  <span className="font-semibold text-white/60 text-xs">
                     km/h
                   </span>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 mt-4">
-                <div className="relative flex items-center justify-center size-12 bg-white/5 rounded-full border border-white/10">
+                <div className="relative flex justify-center items-center bg-white/5 border border-white/10 rounded-full size-12">
                   <BsCompass className="size-6 text-white/20" />
                   <div
-                    className="absolute inset-0 flex items-center justify-center transition-transform duration-500"
+                    className="absolute inset-0 flex justify-center items-center transition-transform duration-500"
                     style={{ transform: `rotate(${windDir}deg)` }}
                   >
-                    <div className="w-1.5 h-6 bg-red-400 rounded-t-full origin-bottom -translate-y-2.5 shadow-sm" />
+                    <div className="bg-red-400 shadow-sm rounded-t-full w-1.5 h-6 origin-bottom -translate-y-2.5" />
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-xs font-semibold text-white/90">
+                  <span className="font-semibold text-white/90 text-xs">
                     Direction
                   </span>
                   <span className="text-[10px] text-white/50">
@@ -769,44 +737,43 @@ export default function WeatherApp() {
               </div>
             </div>
 
-            {/* SUNRISE / SUNSET */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   🌅 Sunrise & Sunset
                 </h4>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-1.5">
-                    <WiSunrise className="text-amber-400 size-6 shrink-0" />
+                    <WiSunrise className="size-6 text-amber-400 shrink-0" />
                     <div>
                       <p className="text-[10px] text-white/40 leading-none">
                         Sunrise
                       </p>
-                      <p className="text-sm font-semibold text-white mt-0.5">
+                      <p className="mt-0.5 font-semibold text-white text-sm">
                         {daily?.sunrise?.[0]
                           ? new Date(daily.sunrise[0]).toLocaleTimeString([], {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            })
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
                           : "05:42"}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="border-t border-white/5 mt-3 pt-3">
+              <div className="mt-3 pt-3 border-white/5 border-t">
                 <div className="flex items-center gap-1.5">
-                  <WiSunset className="text-indigo-400 size-6 shrink-0" />
+                  <WiSunset className="size-6 text-indigo-400 shrink-0" />
                   <div>
                     <p className="text-[10px] text-white/40 leading-none">
                       Sunset
                     </p>
-                    <p className="text-sm font-semibold text-white mt-0.5">
+                    <p className="mt-0.5 font-semibold text-white text-sm">
                       {daily?.sunset?.[0]
                         ? new Date(daily.sunset[0]).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
                         : "21:18"}
                     </p>
                   </div>
@@ -814,36 +781,34 @@ export default function WeatherApp() {
               </div>
             </div>
 
-            {/* FEELS LIKE */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   <BsThermometerHalf className="text-white/40" /> Feels Like
                 </h4>
-                <div className="text-3xl font-light text-white">
+                <div className="font-light text-white text-3xl">
                   {Math.round(current?.apparent_temperature ?? tempC)}°
                 </div>
               </div>
               <div className="mt-4">
                 <p className="text-[10px] text-white/40 leading-relaxed">
                   {Math.round(current?.apparent_temperature ?? tempC) <
-                  Math.round(tempC)
+                    Math.round(tempC)
                     ? "Wind chill is making it feel colder than actual."
                     : Math.round(current?.apparent_temperature ?? tempC) >
-                        Math.round(tempC)
+                      Math.round(tempC)
                       ? "Humidity is making it feel warmer than actual."
                       : "Similar to the actual temperature."}
                 </p>
               </div>
             </div>
 
-            {/* HUMIDITY */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   <BsDropletFill className="text-white/40" /> Humidity
                 </h4>
-                <div className="text-3xl font-light text-white">{humPct}%</div>
+                <div className="font-light text-white text-3xl">{humPct}%</div>
               </div>
               <div className="mt-4">
                 <p className="text-[10px] text-white/40 leading-relaxed">
@@ -852,21 +817,20 @@ export default function WeatherApp() {
               </div>
             </div>
 
-            {/* VISIBILITY */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none">
+            <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
-                <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                   <BsEyeFill className="text-white/40" /> Visibility
                 </h4>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-light text-white">
+                  <span className="font-light text-white text-3xl">
                     {Math.round(
                       hourly?.visibility?.[0]
                         ? hourly.visibility[0] / 1000
                         : 10,
                     )}
                   </span>
-                  <span className="text-xs font-semibold text-white/60">
+                  <span className="font-semibold text-white/60 text-xs">
                     km
                   </span>
                 </div>
@@ -878,24 +842,23 @@ export default function WeatherApp() {
               </div>
             </div>
 
-            {/* PRESSURE */}
-            <div className="bg-white/5 backdrop-blur-md border border-white/5 rounded-2xl p-4 shadow-xl flex flex-col justify-between select-none col-span-2">
+            <div className="flex flex-col justify-between col-span-2 bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div className="flex justify-between items-start">
                 <div>
-                  <h4 className="text-white/40 text-xs font-semibold tracking-wider uppercase flex items-center gap-1.5 mb-2">
+                  <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
                     <BsSpeedometer2 className="text-white/40" /> Pressure
                   </h4>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-light text-white">
+                    <span className="font-light text-white text-2xl">
                       {Math.round(current?.pressure_msl ?? 1013)}
                     </span>
-                    <span className="text-xs font-semibold text-white/60">
+                    <span className="font-semibold text-white/60 text-xs">
                       hPa
                     </span>
                   </div>
                 </div>
                 <div className="flex flex-col text-right">
-                  <span className="text-xs font-semibold text-white/90">
+                  <span className="font-semibold text-white/90 text-xs">
                     Surface Pressure
                   </span>
                   <span className="text-[10px] text-white/50">
@@ -904,17 +867,16 @@ export default function WeatherApp() {
                 </div>
               </div>
 
-              {/* Pressure meter */}
               <div className="relative mt-4">
-                <div className="h-1 bg-black/20 rounded-full w-full relative">
+                <div className="relative bg-black/20 rounded-full w-full h-1">
                   <div
-                    className="absolute top-1/2 w-2 h-2 bg-white border border-black rounded-full -translate-y-1/2"
+                    className="top-1/2 absolute bg-white border border-black rounded-full w-2 h-2 -translate-y-1/2"
                     style={{
                       left: `${Math.max(0, Math.min(100, (((current?.pressure_msl ?? 1013) - 970) / (1050 - 970)) * 100))}%`,
                     }}
                   />
                 </div>
-                <div className="flex justify-between text-[8px] text-white/30 mt-1 select-none font-medium">
+                <div className="flex justify-between mt-1 font-medium text-[8px] text-white/30 select-none">
                   <span>970 hPa (Low)</span>
                   <span>1013 hPa (Avg)</span>
                   <span>1050 hPa (High)</span>
@@ -957,7 +919,6 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
           }
         },
         () => {
-          // Default to PRESET_CITIES[0] (Vilnius)
         },
       );
     }
@@ -992,9 +953,9 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
     return (
       <div
         onClick={onClick}
-        className="w-60 h-32 bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 rounded-3xl p-4 shadow-xl cursor-pointer transition-all flex flex-col justify-center items-center select-none"
+        className="flex flex-col justify-center items-center bg-white/5 hover:bg-white/10 shadow-xl backdrop-blur-md p-4 border border-white/10 rounded-3xl w-60 h-32 transition-all cursor-pointer select-none"
       >
-        <div className="w-6 h-6 border-2 border-t-white/80 border-white/20 rounded-full animate-spin"></div>
+        <div className="border-2 border-white/20 border-t-white/80 rounded-full w-6 h-6 animate-spin"></div>
       </div>
     );
   }
@@ -1007,14 +968,14 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="w-60 h-32 bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-3xl p-4 shadow-xl cursor-pointer transition-all flex flex-col justify-between select-none group"
+      className="group flex flex-col justify-between bg-white/5 hover:bg-white/10 shadow-xl backdrop-blur-md p-4 border border-white/10 hover:border-white/20 rounded-3xl w-60 h-32 transition-all cursor-pointer select-none"
     >
       <div className="flex justify-between items-start">
         <div className="min-w-0">
-          <h3 className="font-bold text-sm text-white truncate leading-snug">
+          <h3 className="font-bold text-white text-sm truncate leading-snug">
             {location.name}
           </h3>
-          <p className="text-[10px] text-white/50 truncate leading-none mt-0.5">
+          <p className="mt-0.5 text-[10px] text-white/50 truncate leading-none">
             {location.country || "Lithuania"}
           </p>
         </div>
@@ -1025,15 +986,15 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
 
       <div className="flex justify-between items-end">
         <div>
-          <span className="font-light text-4xl text-white tracking-tighter">
+          <span className="font-light text-white text-4xl tracking-tighter">
             {Math.round(current?.temperature_2m ?? 0)}
           </span>
-          <span className="font-light text-lg text-white">°</span>
-          <p className="text-[10px] font-semibold text-white/80 mt-0.5 leading-none">
+          <span className="font-light text-white text-lg">°</span>
+          <p className="mt-0.5 font-semibold text-[10px] text-white/80 leading-none">
             {details.label}
           </p>
         </div>
-        <div className="text-right text-[10px] font-semibold text-white/55">
+        <div className="font-semibold text-[10px] text-white/55 text-right">
           <span>H: {Math.round(daily?.temperature_2m_max?.[0] ?? 0)}°</span>
           <span className="ml-1.5">
             L: {Math.round(daily?.temperature_2m_min?.[0] ?? 0)}°

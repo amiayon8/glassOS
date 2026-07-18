@@ -29,7 +29,6 @@
     @apply relative p-2 rounded-xl cursor-pointer select-none;
     @apply transition-all duration-150 ease-out;
 
-    /* Acrylic */
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(24px) saturate(180%);
     -webkit-backdrop-filter: blur(24px) saturate(180%);
@@ -60,7 +59,6 @@
     transition: opacity 0.15s ease;
   }
 
-  /* Hover */
   .app:hover {
     background: rgba(255, 255, 255, 0.12);
     border-color: rgba(255, 255, 255, 0.22);
@@ -82,7 +80,6 @@
     );
   }
 
-  /* Pressed */
   .app:active {
     background: rgba(255, 255, 255, 0.16);
     border-color: rgba(255, 255, 255, 0.28);
@@ -94,7 +91,6 @@
     transform: scale(0.96);
   }
 
-  /* Keyboard focus */
   .app:focus-visible {
     outline: none;
 
@@ -106,7 +102,6 @@
       0 10px 32px rgba(0, 0, 0, 0.3);
   }
 
-  /* Disabled */
   .app:disabled,
   .app[aria-disabled="true"] {
     opacity: 0.45;
@@ -121,7 +116,6 @@
       0 2px 8px rgba(0, 0, 0, 0.12);
   }
 
-  /* Icon */
   .app svg {
     @apply size-5;
     transition:
@@ -169,7 +163,6 @@ button {
   cursor: pointer;
 }
 
-/* --- Premium Glass Scrollbar Styling --- */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -190,17 +183,153 @@ button {
   background: rgba(255, 255, 255, 0.28);
 }
 
-/* Universal scrollbar style for Firefox */
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
 }
 
-/* Hide scrollbars class */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ==========================================================================
+   Calculator & Calendar Glassmorphism Layouts
+   ========================================================================== */
+
+/* Calculator Container */
+.calculator-container {
+  font-family: var(--font-sans), sans-serif;
+}
+
+/* Glass Button base style */
+.calc-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.15), 
+    0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  height: 52px;
+  transition: 
+    background 0.2s ease, 
+    border-color 0.2s ease, 
+    box-shadow 0.2s ease, 
+    transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+  cursor: pointer;
+}
+
+.calc-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.2), 
+    0 8px 20px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
+}
+
+.calc-btn:active {
+  transform: scale(0.92) translateY(0px);
+  transition-duration: 0.06s;
+}
+
+/* Scientific buttons */
+.calc-btn.sci {
+  height: 44px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+/* Accent (Clear/Unary) buttons */
+.calc-btn.accent {
+  background: rgba(124, 58, 237, 0.12);
+  border-color: rgba(124, 58, 237, 0.25);
+  color: #a78bfa;
+}
+.calc-btn.accent:hover {
+  background: rgba(124, 58, 237, 0.22);
+  border-color: rgba(124, 58, 237, 0.4);
+}
+
+/* Active DEG/RAD state */
+.calc-btn.active-toggle {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+/* Operator buttons */
+.calc-btn.operator {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.25);
+  color: #fbbf24;
+}
+.calc-btn.operator:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+/* Equals button */
+.calc-btn.equals-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.3), 
+    0 6px 16px rgba(217, 119, 6, 0.35);
+}
+.calc-btn.equals-btn:hover {
+  background: linear-gradient(135deg, #fbbf24 0%, #ea580c 100%);
+  box-shadow: 
+    inset 0 1px 0 rgba(255, 255, 255, 0.4), 
+    0 10px 24px rgba(217, 119, 6, 0.5);
+}
+
+/* Wide Button Layout */
+.calc-btn.wide {
+  grid-column: span 2;
+}
+
+/* Scientific Grid Layout Adjustments */
+.scientific-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Calendar Cell hover effects */
+.calendar-cell {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.calendar-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.calendar-cell:active {
+  transform: scale(0.95) translateY(0px);
+  transition-duration: 0.06s;
+}
+
+/* Keyframes for shimmer sweeps */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }

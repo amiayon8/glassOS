@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect, FormEvent, DragEvent } from "react";
+import { useState, useEffect, FormEvent, DragEvent, useRef } from "react";
 import Image from "next/image";
 import StatusIcons from "./status-icons";
 import DateTime from "./date-time";
-import { FaChrome, FaFolder, FaUserAstronaut } from "react-icons/fa6";
+import { FaCalculator, FaCalendar, FaCamera, FaChrome, FaDownload, FaFolder, FaUserAstronaut } from "react-icons/fa6";
+import CalculatorApp from "./calculator-app";
+import CalendarApp from "./calendar-app";
 import { VscVscode } from "react-icons/vsc";
 import { LuListTodo } from "react-icons/lu";
-import { BiSolidNotepad } from "react-icons/bi";
+import { BiCamera, BiSolidNotepad } from "react-icons/bi";
 import { IoSettings } from "react-icons/io5";
 import { RiGamepadFill } from "react-icons/ri";
 import { BsCloudSunFill } from "react-icons/bs";
@@ -28,7 +30,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Icon } from "@iconify/react";
 import MainClock from "./main-clock";
-
+import { FaRedo } from "react-icons/fa";
+import { Games } from "./gamesApp"
 type Tab = {
   id: string;
   title: string;
@@ -89,7 +92,7 @@ function AppIcon({ icon: IconComponent, label, onClick, open }: any) {
     >
       <IconComponent />
 
-      <span className="top-full left-1/2 z-[9999] absolute bg-white/10 opacity-0 group-hover:opacity-100 shadow-[0_4px_30px_rgba(0,0,0,0.2)] backdrop-blur-xl mt-2 px-3 py-1.5 border border-white/20 rounded-xl font-medium text-white text-sm whitespace-nowrap transition-all -translate-x-1/2 translate-y-2 group-hover:translate-y-0 duration-200 pointer-events-none tooltip">
+      <span className="top-full left-1/2 z-9999 absolute bg-white/10 opacity-0 group-hover:opacity-100 shadow-[0_4px_30px_rgba(0,0,0,0.2)] backdrop-blur-xl mt-2 px-3 py-1.5 border border-white/20 rounded-xl font-medium text-white text-sm whitespace-nowrap transition-all -translate-x-1/2 translate-y-2 group-hover:translate-y-0 duration-200 pointer-events-none tooltip">
         {label}
       </span>
     </button>
@@ -123,28 +126,27 @@ function Window({
   return (
     <div
       onMouseDown={onFocus}
-      className={`absolute flex flex-col bg-zinc-950/40 shadow-2xl backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden ${
-        isDragging || isResizing
-          ? "transition-none"
-          : "transition-all duration-200"
-      } ${isMinimized ? "opacity-0 scale-95 pointer-events-none translate-y-10" : "opacity-100 scale-100"}`}
+      className={`absolute flex flex-col bg-zinc-950/40 shadow-2xl backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden ${isDragging || isResizing
+        ? "transition-none"
+        : "transition-all duration-200"
+        } ${isMinimized ? "opacity-0 scale-95 pointer-events-none translate-y-10" : "opacity-100 scale-100"}`}
       style={
         isMaximized
           ? {
-              top: "3.25rem",
-              left: 0,
-              width: "100vw",
-              height: "calc(100vh - 3.25rem)",
-              borderRadius: 0,
-              zIndex,
-            }
+            top: "3.25rem",
+            left: 0,
+            width: "100vw",
+            height: "calc(100vh - 3.25rem)",
+            borderRadius: 0,
+            zIndex,
+          }
           : {
-              top: y,
-              left: x,
-              width: w,
-              height: h,
-              zIndex,
-            }
+            top: y,
+            left: x,
+            width: w,
+            height: h,
+            zIndex,
+          }
       }
     >
       <div
@@ -196,7 +198,7 @@ function Window({
       {!isMaximized && (
         <div
           onMouseDown={onResizeStart}
-          className="right-0 bottom-0 z-[99999] absolute w-4 h-4 cursor-se-resize"
+          className="right-0 bottom-0 z-99999 absolute w-4 h-4 cursor-se-resize"
           style={{
             background:
               "linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.2) 50%)",
@@ -259,6 +261,36 @@ export default function Home() {
     {},
   );
 
+  useEffect(() => {
+    const handleCalcMode = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const mode = customEvent.detail.mode;
+      setWindows((prev) => {
+        const calc = prev["Calculator"];
+        if (!calc) return prev;
+        let targetWidth = 360;
+        let targetHeight = 580;
+        if (mode === "both") {
+          targetWidth = 720;
+          targetHeight = 440;
+        } else if (mode === "scientific") {
+          targetWidth = 380;
+          targetHeight = 580;
+        }
+        return {
+          ...prev,
+          Calculator: {
+            ...calc,
+            w: targetWidth,
+            h: targetHeight,
+          },
+        };
+      });
+    };
+    window.addEventListener("calculatorModeChange", handleCalcMode);
+    return () => window.removeEventListener("calculatorModeChange", handleCalcMode);
+  }, []);
+
   const [windows, setWindows] = useState<
     Record<
       string,
@@ -302,6 +334,36 @@ export default function Home() {
       y: 130,
       w: 550,
       h: 400,
+      zIndex: 1,
+    },
+    Camera: {
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: true,
+      x: 240,
+      y: 130,
+      w: 550,
+      h: 400,
+      zIndex: 1,
+    },
+    Calculator: {
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      x: 180,
+      y: 100,
+      w: 360,
+      h: 580,
+      zIndex: 1,
+    },
+    Calendar: {
+      isOpen: false,
+      isMinimized: false,
+      isMaximized: false,
+      x: 240,
+      y: 90,
+      w: 800,
+      h: 560,
       zIndex: 1,
     },
     "To-Do": {
@@ -374,6 +436,108 @@ export default function Home() {
 
   const activeTab = tabs.find((t) => t.id === activeTabId) || tabs[0];
 
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
+
+  const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
+  const [cameraId, setCameraId] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      await navigator.mediaDevices.getUserMedia({ video: true });
+
+      const all = await navigator.mediaDevices.enumerateDevices();
+      const cams = all.filter(d => d.kind === "videoinput");
+
+      setDevices(cams);
+
+      if (cams.length) {
+        setCameraId(cams[0].deviceId);
+      }
+    })();
+
+    return stopCamera;
+  }, []);
+
+  useEffect(() => {
+    if (cameraId) startCamera(cameraId);
+  }, [cameraId]);
+
+  async function init() {
+    await startCamera();
+
+    const allDevices = await navigator.mediaDevices.enumerateDevices();
+
+    const cams = allDevices.filter((d) => d.kind === "videoinput");
+
+    setDevices(cams);
+
+    if (cams.length) setCameraId(cams[0].deviceId);
+  }
+
+  async function startCamera(deviceId?: string) {
+    stopCamera();
+
+    const media = await navigator.mediaDevices.getUserMedia({
+      video: deviceId
+        ? { deviceId: { exact: deviceId } }
+        : { facingMode: "environment" },
+      audio: false,
+    });
+
+    streamRef.current = media;
+
+    if (videoRef.current) {
+      videoRef.current.srcObject = media;
+      await videoRef.current.play();
+    }
+  }
+
+  function stopCamera() {
+    streamRef.current?.getTracks().forEach(track => track.stop());
+    streamRef.current = null;
+  }
+
+  function capture() {
+    if (!videoRef.current || !canvasRef.current) return;
+
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    ctx.drawImage(video, 0, 0);
+
+    setPhoto(canvas.toDataURL("image/png"));
+  }
+
+  function download() {
+    if (!photo) return;
+
+    const a = document.createElement("a");
+    a.href = photo;
+    a.download = `photo-${Date.now()}.png`;
+    a.click();
+  }
+
+  async function retake() {
+    setPhoto(null);
+
+    if (cameraId) {
+      await startCamera(cameraId);
+    } else {
+      await startCamera();
+    }
+  }
+
   const bringToFront = (label: string) => {
     const nextZ = maxZIndex + 1;
     setMaxZIndex(nextZ);
@@ -402,12 +566,28 @@ export default function Home() {
       setWindows((prev) => {
         const w = prev[label];
         if (!w) return prev;
+
+        const topBoundary = 52; // Height of the GlassOS top status bar (3.25rem = 52px)
+        const headerHeight = 40; // Approximate height of the window drag header bar
+
+        let newX = moveEvent.clientX - startX;
+        let newY = moveEvent.clientY - startY;
+
+        // Constrain Y: prevent header from going above top taskbar or completely below screen viewport
+        const maxY = window.innerHeight - headerHeight;
+        newY = Math.max(topBoundary, Math.min(maxY, newY));
+
+        // Constrain X: ensure at least 100px of the header bar width remains visible on the viewport
+        const minX = 100 - w.w;
+        const maxX = window.innerWidth - 100;
+        newX = Math.max(minX, Math.min(maxX, newX));
+
         return {
           ...prev,
           [label]: {
             ...w,
-            x: moveEvent.clientX - startX,
-            y: moveEvent.clientY - startY,
+            x: newX,
+            y: newY,
           },
         };
       });
@@ -723,6 +903,9 @@ export default function Home() {
   }, [battery, charging, online]);
 
   const initialApps = [
+    { icon: FaCalculator, label: "Calculator" },
+    { icon: FaCalendar, label: "Calendar" },
+    { icon: FaCamera, label: "Camera" },
     { icon: IoSettings, label: "Settings" },
     { icon: VscVscode, label: "Visual Studio Code" },
     { icon: BiSolidNotepad, label: "Notepad" },
@@ -733,7 +916,6 @@ export default function Home() {
   ];
   const [items, setItems] = useState(initialApps);
 
-  // Load persisted states from localStorage on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -779,7 +961,6 @@ export default function Home() {
           )
           .filter(Boolean) as any[];
 
-        // Include any initial apps that weren't in the saved order
         initialApps.forEach((app: any) => {
           if (!orderedLabels.includes(app.label)) {
             orderedApps.push(app);
@@ -804,7 +985,6 @@ export default function Home() {
     }
   }, []);
 
-  // Sync to localStorage hooks
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("glassos_wallpaper", wallpaper);
@@ -1330,6 +1510,72 @@ export default function Home() {
     );
   };
 
+  const renderCamera = () => {
+
+    return (
+      <div className="flex flex-col flex-1 gap-4 bg-amber-50/5 backdrop-blur-md p-4 overflow-hidden text-stone-100">
+        <select
+          className="bg-black/40 p-2 rounded"
+          value={cameraId}
+          onChange={(e) => setCameraId(e.target.value)}
+        >
+          {devices.map((d, i) => (
+            <option key={d.deviceId} value={d.deviceId}>
+              {d.label || `Camera ${i + 1}`}
+            </option>
+          ))}
+        </select>
+
+        <div className="flex flex-1 justify-center items-center rounded-xl overflow-hidden">
+          {photo ? (
+            <img
+              src={photo}
+              alt="Captured"
+              className="rounded-xl w-full h-full object-contain"
+            />
+          ) : (
+            <video
+              ref={videoRef}
+              autoPlay
+              playsInline
+              muted
+              className="rounded-xl w-full h-full object-cover aspect-video"
+            />
+          )}
+        </div>
+
+        <canvas ref={canvasRef} className="hidden" />
+
+        <div className="flex justify-center gap-3">
+          {!photo ? (
+            <button
+              onClick={capture}
+              className="bg-white p-4 rounded-full text-black"
+            >
+              <FaCamera />
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={retake}
+                className="bg-yellow-500 p-4 rounded-full"
+              >
+                <FaRedo />
+              </button>
+
+              <button
+                onClick={download}
+                className="bg-green-600 p-4 rounded-full"
+              >
+                <FaDownload />
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    )
+  }
+
   const renderNotepad = () => {
     return (
       <div className="flex flex-col flex-1 bg-amber-50/5 backdrop-blur-md p-4 text-stone-100">
@@ -1366,8 +1612,8 @@ export default function Home() {
     const activeCount = todos.filter((t) => !t.completed).length;
     const progress = todos.length
       ? Math.round(
-          (todos.filter((t) => t.completed).length / todos.length) * 100,
-        )
+        (todos.filter((t) => t.completed).length / todos.length) * 100,
+      )
       : 0;
 
     const handleAddTodo = (e: React.FormEvent) => {
@@ -1468,131 +1714,13 @@ export default function Home() {
     );
   };
 
-  const renderGames = () => {
-    const cellClick = (index: number) => {
-      if (gameBoard[index] || gameWinner) return;
+  const renderCalculator = () => {
+    return <CalculatorApp />;
+  }
 
-      const newBoard = [...gameBoard];
-      newBoard[index] = "X";
-      setGameBoard(newBoard);
-
-      const checkWinner = (board: (string | null)[]) => {
-        const lines = [
-          [0, 1, 2],
-          [3, 4, 5],
-          [6, 7, 8],
-          [0, 3, 6],
-          [1, 4, 7],
-          [2, 5, 8],
-          [0, 4, 8],
-          [2, 4, 6],
-        ];
-        for (let i = 0; i < lines.length; i++) {
-          const [a, b, c] = lines[i];
-          if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-            return board[a];
-          }
-        }
-        if (board.every((cell) => cell !== null)) return "Tie";
-        return null;
-      };
-
-      const result = checkWinner(newBoard);
-      if (result) {
-        handleGameEnd(result);
-        return;
-      }
-
-      const emptyCells = newBoard
-        .map((c, i) => (c === null ? i : null))
-        .filter((c) => c !== null) as number[];
-      if (emptyCells.length === 0) return;
-
-      const aiMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-      setTimeout(() => {
-        const finalBoard = [...newBoard];
-        finalBoard[aiMove] = "O";
-        setGameBoard(finalBoard);
-        const finalResult = checkWinner(finalBoard);
-        if (finalResult) {
-          handleGameEnd(finalResult);
-        }
-      }, 400);
-    };
-
-    const handleGameEnd = (result: string) => {
-      setGameWinner(result);
-      if (result === "X") {
-        setGameScores((prev) => ({ ...prev, player: prev.player + 1 }));
-      } else if (result === "O") {
-        setGameScores((prev) => ({ ...prev, ai: prev.ai + 1 }));
-      } else {
-        setGameScores((prev) => ({ ...prev, ties: prev.ties + 1 }));
-      }
-    };
-
-    const resetGame = () => {
-      setGameBoard(Array(9).fill(null));
-      setGameWinner(null);
-    };
-
-    return (
-      <div className="flex flex-col flex-1 justify-between bg-zinc-950/60 backdrop-blur-md p-6 text-white select-none">
-        <div className="flex justify-between items-center bg-white/5 p-3 border border-white/5 rounded-2xl shrink-0">
-          <div className="flex-1 border-white/5 border-r text-center">
-            <div className="text-white/50 text-xs">Player (X)</div>
-            <div className="font-bold text-lg">{gameScores.player}</div>
-          </div>
-          <div className="flex-1 border-white/5 border-r text-center">
-            <div className="text-white/50 text-xs">Ties</div>
-            <div className="font-bold text-lg">{gameScores.ties}</div>
-          </div>
-          <div className="flex-1 text-center">
-            <div className="text-white/50 text-xs">AI (O)</div>
-            <div className="font-bold text-lg">{gameScores.ai}</div>
-          </div>
-        </div>
-
-        <div className="gap-2 grid grid-cols-3 mx-auto my-6 w-48 h-48 shrink-0">
-          {gameBoard.map((cell, index) => (
-            <button
-              key={index}
-              onClick={() => cellClick(index)}
-              className="flex justify-center items-center bg-white/5 hover:bg-white/10 disabled:opacity-80 border border-white/10 rounded-xl font-bold text-2xl active:scale-95 transition-all animate-none cursor-pointer"
-            >
-              {cell === "X" && <span className="text-blue-400">X</span>}
-              {cell === "O" && <span className="text-pink-500">O</span>}
-            </button>
-          ))}
-        </div>
-
-        <div className="text-center shrink-0">
-          {gameWinner ? (
-            <div className="mb-3">
-              <span className="font-bold text-sm">
-                {gameWinner === "Tie"
-                  ? "It is a Tie!"
-                  : gameWinner === "X"
-                    ? "You Won!"
-                    : "AI Won!"}
-              </span>
-            </div>
-          ) : (
-            <div className="mb-3 text-white/50 text-xs">
-              Your turn (Player X)
-            </div>
-          )}
-
-          <button
-            onClick={resetGame}
-            className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-xl font-semibold text-xs transition-all cursor-pointer"
-          >
-            Reset Game
-          </button>
-        </div>
-      </div>
-    );
-  };
+  const renderCalendar = () => {
+    return <CalendarApp />;
+  }
 
   const renderAppContent = (label: string) => {
     switch (label) {
@@ -1600,14 +1728,20 @@ export default function Home() {
         return renderChrome();
       case "Settings":
         return renderSettings();
+      case "Camera":
+        return renderCamera();
       case "Visual Studio Code":
         return renderVSCode();
       case "Notepad":
         return renderNotepad();
+      case "Calculator":
+        return renderCalculator();
+      case "Calendar":
+        return renderCalendar();
       case "To-Do":
         return renderToDo();
       case "Games":
-        return renderGames();
+        return <Games />;
       case "Weather":
         return <WeatherApp />;
       default:
@@ -1627,11 +1761,10 @@ export default function Home() {
             onDrop={(e) => handleTabDrop(e, index)}
             onDragOver={handleTabDragOver}
             onClick={() => switchTab(tab)}
-            className={`group flex items-center gap-2 max-w-50 min-w-30 px-4 py-2 rounded-t-xl text-sm cursor-pointer transition-colors ${
-              isActive
-                ? "bg-[#2b2c2f] text-gray-100"
-                : "bg-transparent text-gray-400 hover:bg-white/5"
-            }`}
+            className={`group flex items-center gap-2 max-w-50 min-w-30 px-4 py-2 rounded-t-xl text-sm cursor-pointer transition-colors ${isActive
+              ? "bg-[#2b2c2f] text-gray-100"
+              : "bg-transparent text-gray-400 hover:bg-white/5"
+              }`}
           >
             <Icon icon="mdi:web" className="shrink-0" width={16} />
             <span className="flex-1 font-medium truncate">{tab.title}</span>
@@ -1639,9 +1772,8 @@ export default function Home() {
               icon="mdi:close"
               width={14}
               onClick={(e: React.MouseEvent) => closeTab(e, tab.id)}
-              className={`shrink-0 rounded-full hover:bg-white/20 p-px transition-opacity ${
-                isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-              }`}
+              className={`shrink-0 rounded-full hover:bg-white/20 p-px transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
             />
           </div>
         );
@@ -1670,7 +1802,7 @@ export default function Home() {
 
       {currentScreen !== "LOGIN" ? (
         <>
-          <div className="top-0 z-[99999] absolute flex flex-row justify-between items-center bg-black/20 backdrop-blur-md px-4 border-white/10 border-b w-full h-13 glass-navbar">
+          <div className="top-0 z-1 absolute flex flex-row justify-between items-center bg-black/20 backdrop-blur-md px-4 border-white/10 border-b w-full h-13 glass-navbar">
             <div className="flex flex-col justify-center items-start text-white text-start leading-none select-none">
               <DateTime />
             </div>

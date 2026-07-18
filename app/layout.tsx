@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Varela_Round } from "next/font/google";
-import { ThemeProvider } from "next-themes"
+import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import WelcomePrompt from "./WelcomePrompt";
 
 const varela = Varela_Round({
   variable: "--font-varela",
-  weight: ["400"]
+  weight: ["400"],
 });
 
 const geistMono = Geist_Mono({
@@ -31,6 +32,7 @@ export default function RootLayout({
     >
       <body className="bg-background min-h-dvh font-sans text-foreground antialiased">
         {children}
+        <WelcomePrompt />
       </body>
     </html>
   );

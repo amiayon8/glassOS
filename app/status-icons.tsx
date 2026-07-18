@@ -52,7 +52,6 @@ export default function StatusIcons({
 
     return (
         <div className="flex items-center gap-1">
-            {/* WiFi */}
             <button
                 className="group relative hover:bg-white/10 p-1.5 rounded-lg active:scale-95 transition-all"
                 title={online ? "Connected" : "Offline"}
@@ -64,7 +63,6 @@ export default function StatusIcons({
                 />
             </button>
 
-            {/* Battery */}
             <div ref={batteryRef} className="relative">
                 <button
                     onClick={() => setShowBattery((v) => !v)}
