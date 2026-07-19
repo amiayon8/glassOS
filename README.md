@@ -8,6 +8,7 @@ A browser based virtual Operating System based on clean glassmorphism UI, simple
 - **State Persistence:** Persistent windows position, customization
 - **Taskbar:** Built with `@dnd-kit/sortable` for dynamic drag-and-drop rearranging of dock icons.
 - **Hardware APIs:** Hooks into browser APIs to display real-time battery status, charging indicators, network speed estimates, and memory usage.
+- **Hackatime Widget** A real hackatime widget where users can connect their account and see real stats.
 
 ## Built-in Apps
 
@@ -17,6 +18,8 @@ A browser based virtual Operating System based on clean glassmorphism UI, simple
 - **Tasks:** A basic checklist tracker.
 - **Settings:** Controls desktop wallpapers and system preferences.
 - **VS Code:** A mock code editor interface with active file state tracking.
+- **Calculator** A real calculator app with scientific operations
+- **Calendar** A real calendar with persistent events storage
 
 ## Stack
 
