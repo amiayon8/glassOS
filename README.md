@@ -20,8 +20,7 @@ A browser based virtual Operating System based on clean glassmorphism UI, simple
 
 ## Stack
 
-- Next.js (App Router, configured for static HTML export)
-- React 19
+- Next.js
 - Tailwind CSS v4
 - @dnd-kit (Core & Sortable)
 - React Icons / Iconify
