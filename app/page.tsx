@@ -32,6 +32,7 @@ import { Icon } from "@iconify/react";
 import MainClock from "./main-clock";
 import { FaRedo } from "react-icons/fa";
 import { Games } from "./gamesApp"
+import { HackaTimeWidget } from "./hackatime-widget";
 type Tab = {
   id: string;
   title: string;
@@ -567,17 +568,15 @@ export default function Home() {
         const w = prev[label];
         if (!w) return prev;
 
-        const topBoundary = 52; // Height of the GlassOS top status bar (3.25rem = 52px)
-        const headerHeight = 40; // Approximate height of the window drag header bar
+        const topBoundary = 52;
+        const headerHeight = 40;
 
         let newX = moveEvent.clientX - startX;
         let newY = moveEvent.clientY - startY;
 
-        // Constrain Y: prevent header from going above top taskbar or completely below screen viewport
         const maxY = window.innerHeight - headerHeight;
         newY = Math.max(topBoundary, Math.min(maxY, newY));
 
-        // Constrain X: ensure at least 100px of the header bar width remains visible on the viewport
         const minX = 100 - w.w;
         const maxX = window.innerWidth - 100;
         newX = Math.max(minX, Math.min(maxX, newX));
@@ -1858,6 +1857,10 @@ export default function Home() {
           <div className="top-1/2 left-1/2 absolute flex flex-col items-center gap-2 -translate-1/2">
             <MainClock />
             <WeatherWidget onClick={() => handleAppClick("Weather")} />
+          </div>
+
+          <div className="right-5 bottom-10 absolute flex flex-col items-center gap-2">
+            <HackaTimeWidget />
           </div>
 
           {Object.entries(windows).map(([label, win]) => {

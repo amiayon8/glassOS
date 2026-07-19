@@ -32,8 +32,4 @@ A browser based virtual Operating System based on clean glassmorphism UI, simple
 - Added game library
 - Added calculator app
 - Added calendar app
-
-## Next Steps
-
-- Add music app
-- Add video player
+- Added hackatime widget
