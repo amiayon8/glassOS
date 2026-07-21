@@ -63,7 +63,7 @@ export async function GET(req: Request) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: token.expires_in ?? 60 * 60 * 24 * 30, // seconds
+        maxAge: token.expires_in ?? 60 * 60 * 24 * 30,
     });
 
     return response;

@@ -11,7 +11,6 @@ export async function hackaTimeCheck(timezone: string = "UTC") {
     }
 
     try {
-        // 1. Fetch user info
         const meRes = await fetch(
             "https://hackatime.hackclub.com/api/v1/authenticated/me",
             {
@@ -29,7 +28,6 @@ export async function hackaTimeCheck(timezone: string = "UTC") {
         }
         const meData = await meRes.json();
 
-        // 2. Fetch total hours (all time)
         const totalRes = await fetch(
             "https://hackatime.hackclub.com/api/v1/authenticated/hours?start_date=2015-01-01",
             {
@@ -45,10 +43,9 @@ export async function hackaTimeCheck(timezone: string = "UTC") {
             totalSeconds = totalData.total_seconds || 0;
         }
 
-        // 3. Generate last 7 days in the user's timezone
         const dates: string[] = [];
         const now = new Date();
-        
+
         const formatter = new Intl.DateTimeFormat("en-US", {
             timeZone: timezone,
             year: "numeric",
@@ -65,7 +62,6 @@ export async function hackaTimeCheck(timezone: string = "UTC") {
             dates.push(`${year}-${month}-${day}`);
         }
 
-        // 4. Fetch daily hours for the last 7 days in parallel
         const dailyPromises = dates.map(async (date) => {
             try {
                 const res = await fetch(
