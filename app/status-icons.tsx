@@ -53,41 +53,41 @@ export default function StatusIcons({
     return (
         <div className="flex items-center gap-1">
             <button
-                className="group relative hover:bg-white/10 p-1.5 rounded-lg active:scale-95 transition-all"
+                className="group relative hover:bg-white/[0.08] p-1.5 rounded-md active:scale-95 transition-all duration-150"
                 title={online ? "Connected" : "Offline"}
             >
                 <Icon
                     icon={wifiIcon}
-                    width={19}
-                    className="text-white/70 group-hover:text-white transition-colors"
+                    width={17}
+                    className="text-neutral-400 group-hover:text-white transition-colors"
                 />
             </button>
 
             <div ref={batteryRef} className="relative">
                 <button
                     onClick={() => setShowBattery((v) => !v)}
-                    className="group hover:bg-white/10 p-1.5 rounded-lg active:scale-95 transition-all"
+                    className="group hover:bg-white/[0.08] p-1.5 rounded-md active:scale-95 transition-all duration-150"
                 >
                     <Icon
                         icon={batteryIcon}
-                        width={19}
+                        width={17}
                         className={`transition-colors ${battery <= 15
                             ? "text-red-400"
                             : charging
-                                ? "text-green-400"
-                                : "text-white/70 group-hover:text-white"
+                                ? "text-emerald-400"
+                                : "text-neutral-400 group-hover:text-white"
                             }`}
                     />
                 </button>
 
                 <div
                     className={`
-                        absolute right-0 top-full mt-2 w-72
-                        rounded-2xl border border-white/15
-                        bg-black/30 backdrop-blur-2xl shadow-2xl
+                        absolute right-0 top-full mt-2 w-64
+                        rounded-xl border border-white/10
+                        bg-zinc-950/90 backdrop-blur-xl shadow-2xl
 
                         origin-top-right
-                        transition-all duration-300 ease-[cubic-bezier(.2,.8,.2,1)]
+                        transition-all duration-180 ease-out
 
                         ${showBattery
                             ? "pointer-events-auto translate-y-0 scale-100 opacity-100"
@@ -96,39 +96,38 @@ export default function StatusIcons({
                     `}
                 >
                     <div className="p-4">
-                        <div className="flex justify-between items-center">
-                            <span className="font-semibold text-white">
+                        <div className="flex justify-between items-center mb-3">
+                            <span className="font-mono text-[10px] text-neutral-400 uppercase tracking-widest">
                                 Battery
                             </span>
-
-                            <span className="font-bold text-white text-xl">
+                            <span className="font-mono text-neutral-200 text-xs">
                                 {battery}%
                             </span>
                         </div>
 
-                        <div className="bg-white/10 mt-3 rounded-full h-2 overflow-hidden">
+                        <div className="bg-white/10 rounded-full h-1.5 overflow-hidden mb-4">
                             <div
-                                className={`h-full transition-all duration-500 ${battery <= 15
+                                className={`h-full transition-all duration-300 ${battery <= 15
                                     ? "bg-red-400"
                                     : charging
-                                        ? "bg-green-400"
+                                        ? "bg-emerald-400"
                                         : "bg-white"
                                     }`}
                                 style={{ width: `${battery}%` }}
                             />
                         </div>
 
-                        <div className="space-y-2 mt-4 text-sm">
+                        <div className="space-y-1.5 text-xs">
                             <div className="flex justify-between">
-                                <span className="text-white/60">Status</span>
-                                <span className="text-white">
-                                    {charging ? "Charging" : "On battery"}
+                                <span className="text-neutral-400">Power Source</span>
+                                <span className="text-neutral-200 font-medium">
+                                    {charging ? "Power Adapter" : "Battery"}
                                 </span>
                             </div>
 
                             <div className="flex justify-between">
-                                <span className="text-white/60">Battery Level</span>
-                                <span className="text-white">{battery}%</span>
+                                <span className="text-neutral-400">Health</span>
+                                <span className="text-emerald-400 font-medium">Normal</span>
                             </div>
                         </div>
                     </div>

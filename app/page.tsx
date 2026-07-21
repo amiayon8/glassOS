@@ -93,7 +93,7 @@ function AppIcon({ icon: IconComponent, label, onClick, open }: any) {
     >
       <IconComponent />
 
-      <span className="top-full left-1/2 z-9999 absolute bg-white/10 opacity-0 group-hover:opacity-100 shadow-[0_4px_30px_rgba(0,0,0,0.2)] backdrop-blur-xl mt-2 px-3 py-1.5 border border-white/20 rounded-xl font-medium text-white text-sm whitespace-nowrap transition-all -translate-x-1/2 translate-y-2 group-hover:translate-y-0 duration-200 pointer-events-none tooltip">
+      <span className="top-full left-1/2 z-[9999] absolute bg-zinc-950/90 opacity-0 group-hover:opacity-100 backdrop-blur-md mt-2.5 px-2.5 py-1 border border-white/10 rounded-md font-medium text-neutral-200 text-xs whitespace-nowrap transition-all -translate-x-1/2 translate-y-1 group-hover:translate-y-0 duration-150 pointer-events-none shadow-lg">
         {label}
       </span>
     </button>
@@ -127,17 +127,17 @@ function Window({
   return (
     <div
       onMouseDown={onFocus}
-      className={`absolute flex flex-col bg-zinc-950/40 shadow-2xl backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden ${isDragging || isResizing
+      className={`absolute flex flex-col bg-zinc-950/75 backdrop-blur-2xl border border-white/[0.08] rounded-xl overflow-hidden shadow-2xl ${isDragging || isResizing
         ? "transition-none"
-        : "transition-all duration-200"
-        } ${isMinimized ? "opacity-0 scale-95 pointer-events-none translate-y-10" : "opacity-100 scale-100"}`}
+        : "transition-all duration-200 ease-out"
+        } ${isMinimized ? "opacity-0 scale-95 pointer-events-none translate-y-8" : "opacity-100 scale-100"}`}
       style={
         isMaximized
           ? {
-            top: "3.25rem",
+            top: "2.75rem",
             left: 0,
             width: "100vw",
-            height: "calc(100vh - 3.25rem)",
+            height: "calc(100vh - 2.75rem)",
             borderRadius: 0,
             zIndex,
           }
@@ -152,43 +152,43 @@ function Window({
     >
       <div
         onMouseDown={onDragStart}
-        className="flex justify-between items-center gap-2 bg-white/5 px-4 py-2 border-white/5 border-b cursor-default select-none shrink-0"
+        className="flex justify-between items-center gap-2 bg-white/[0.03] px-3.5 py-2.5 border-b border-white/[0.06] cursor-default select-none shrink-0"
       >
         <div className="flex flex-1 items-center gap-2 min-w-0">
+          <div className="flex items-center gap-1.5 pr-2 border-r border-white/10 nodrag shrink-0">
+            <button
+              onClick={onClose}
+              className="group flex justify-center items-center bg-rose-500/80 hover:bg-rose-500 rounded-full w-3 h-3 transition-colors cursor-pointer"
+              title="Close"
+            >
+              <Icon icon="mdi:close" className="opacity-0 group-hover:opacity-100 text-black/80" width={9} />
+            </button>
+            <button
+              onClick={onMinimize}
+              className="group flex justify-center items-center bg-amber-500/80 hover:bg-amber-500 rounded-full w-3 h-3 transition-colors cursor-pointer"
+              title="Minimize"
+            >
+              <Icon icon="mdi:minus" className="opacity-0 group-hover:opacity-100 text-black/80" width={9} />
+            </button>
+            <button
+              onClick={onMaximize}
+              className="group flex justify-center items-center bg-emerald-500/80 hover:bg-emerald-500 rounded-full w-3 h-3 transition-colors cursor-pointer"
+              title={isMaximized ? "Restore" : "Maximize"}
+            >
+              <Icon icon={isMaximized ? "mdi:window-restore" : "mdi:plus"} className="opacity-0 group-hover:opacity-100 text-black/80" width={9} />
+            </button>
+          </div>
+
           {headerContent ? (
             headerContent
           ) : (
-            <>
-              <IconComponent className="size-4 text-gray-300 shrink-0" />
-              <span className="font-medium text-gray-300 text-sm truncate">
+            <div className="flex items-center gap-2 min-w-0">
+              <IconComponent className="size-3.5 text-neutral-400 shrink-0" />
+              <span className="font-medium text-neutral-300 text-xs truncate">
                 {label}
               </span>
-            </>
+            </div>
           )}
-        </div>
-
-        <div className="flex gap-1 pr-1 pb-1 nodrag shrink-0">
-          <button
-            onClick={onMinimize}
-            className="hover:bg-white/10 p-2 rounded text-gray-300"
-          >
-            <Icon icon="mdi:window-minimize" width={16} />
-          </button>
-          <button
-            onClick={onMaximize}
-            className="hover:bg-white/10 p-2 rounded text-gray-300"
-          >
-            <Icon
-              icon={isMaximized ? "mdi:window-restore" : "mdi:window-maximize"}
-              width={16}
-            />
-          </button>
-          <button
-            onClick={onClose}
-            className="hover:bg-red-500/80 p-2 rounded text-gray-300 hover:text-white transition-colors"
-          >
-            <Icon icon="mdi:close" width={16} />
-          </button>
         </div>
       </div>
 
@@ -199,10 +199,10 @@ function Window({
       {!isMaximized && (
         <div
           onMouseDown={onResizeStart}
-          className="right-0 bottom-0 z-99999 absolute w-4 h-4 cursor-se-resize"
+          className="right-0 bottom-0 z-50 absolute w-3.5 h-3.5 cursor-se-resize"
           style={{
             background:
-              "linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.2) 50%)",
+              "linear-gradient(135deg, transparent 50%, rgba(255,255,255,0.15) 50%)",
           }}
         />
       )}
@@ -1244,28 +1244,28 @@ export default function Home() {
           {settingsTab === "system" && (
             <div className="space-y-6">
               <div>
-                <h3 className="mb-3 font-semibold text-lg">System Resources</h3>
+                <h3 className="mb-3 font-medium text-base text-white">Performance</h3>
                 <div className="gap-4 grid grid-cols-2">
-                  <div className="bg-white/5 p-4 border border-white/5 rounded-2xl">
-                    <div className="flex justify-between mb-2 text-white/60 text-sm">
-                      <span>CPU Usage</span>
-                      <span>{cpuUsage}%</span>
+                  <div className="bg-white/5 p-4 border border-white/5 rounded-xl">
+                    <div className="flex justify-between mb-2 text-neutral-400 text-xs">
+                      <span>CPU</span>
+                      <span className="font-mono text-neutral-200">{cpuUsage}%</span>
                     </div>
-                    <div className="bg-white/10 rounded-full w-full h-2 overflow-hidden">
+                    <div className="bg-white/10 rounded-full w-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-blue-500 h-full transition-all duration-500"
+                        className="bg-white h-full transition-all duration-300"
                         style={{ width: `${cpuUsage}%` }}
                       ></div>
                     </div>
                   </div>
-                  <div className="bg-white/5 p-4 border border-white/5 rounded-2xl">
-                    <div className="flex justify-between mb-2 text-white/60 text-sm">
-                      <span>Memory Usage</span>
-                      <span>{memUsage}%</span>
+                  <div className="bg-white/5 p-4 border border-white/5 rounded-xl">
+                    <div className="flex justify-between mb-2 text-neutral-400 text-xs">
+                      <span>Memory</span>
+                      <span className="font-mono text-neutral-200">{memUsage}%</span>
                     </div>
-                    <div className="bg-white/10 rounded-full w-full h-2 overflow-hidden">
+                    <div className="bg-white/10 rounded-full w-full h-1.5 overflow-hidden">
                       <div
-                        className="bg-purple-500 h-full transition-all duration-500"
+                        className="bg-white h-full transition-all duration-300"
                         style={{ width: `${memUsage}%` }}
                       ></div>
                     </div>
@@ -1274,22 +1274,22 @@ export default function Home() {
               </div>
 
               <div>
-                <h3 className="mb-3 font-semibold text-lg">
-                  Network & Connections
+                <h3 className="mb-3 font-medium text-base text-white">
+                  Network
                 </h3>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center bg-white/5 p-3 border border-white/5 rounded-xl">
                     <div className="flex items-center gap-3">
                       <Icon
                         icon="mdi:wifi"
-                        className="text-blue-400"
-                        width={20}
+                        className="text-neutral-300"
+                        width={18}
                       />
                       <div>
-                        <div className="font-semibold text-sm">
-                          Wi-Fi Connection
+                        <div className="font-medium text-xs text-white">
+                          Wi-Fi
                         </div>
-                        <div className="text-white/50 text-xs">
+                        <div className="text-neutral-400 text-[11px]">
                           {settingsWifi
                             ? "Connected to GlassNet"
                             : "Disconnected"}
@@ -1298,10 +1298,10 @@ export default function Home() {
                     </div>
                     <button
                       onClick={() => setSettingsWifi(!settingsWifi)}
-                      className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 cursor-pointer ${settingsWifi ? "bg-blue-500" : "bg-white/20"}`}
+                      className={`w-10 h-5 rounded-full p-0.5 transition-colors duration-200 cursor-pointer ${settingsWifi ? "bg-white" : "bg-white/20"}`}
                     >
                       <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${settingsWifi ? "translate-x-6" : ""}`}
+                        className={`bg-zinc-950 w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${settingsWifi ? "translate-x-5" : ""}`}
                       ></div>
                     </button>
                   </div>
@@ -1310,24 +1310,24 @@ export default function Home() {
                     <div className="flex items-center gap-3">
                       <Icon
                         icon="mdi:bluetooth"
-                        className="text-blue-400"
-                        width={20}
+                        className="text-neutral-300"
+                        width={18}
                       />
                       <div>
-                        <div className="font-semibold text-sm">Bluetooth</div>
-                        <div className="text-white/50 text-xs">
+                        <div className="font-medium text-xs text-white">Bluetooth</div>
+                        <div className="text-neutral-400 text-[11px]">
                           {settingsBluetooth
-                            ? "Searching for devices..."
+                            ? "Searching"
                             : "Off"}
                         </div>
                       </div>
                     </div>
                     <button
                       onClick={() => setSettingsBluetooth(!settingsBluetooth)}
-                      className={`w-12 h-6 rounded-full p-1 transition-colors duration-200 cursor-pointer ${settingsBluetooth ? "bg-blue-500" : "bg-white/20"}`}
+                      className={`w-10 h-5 rounded-full p-0.5 transition-colors duration-200 cursor-pointer ${settingsBluetooth ? "bg-white" : "bg-white/20"}`}
                     >
                       <div
-                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition-transform duration-200 ${settingsBluetooth ? "translate-x-6" : ""}`}
+                        className={`bg-zinc-950 w-4 h-4 rounded-full shadow transform transition-transform duration-200 ${settingsBluetooth ? "translate-x-5" : ""}`}
                       ></div>
                     </button>
                   </div>
@@ -1339,30 +1339,30 @@ export default function Home() {
           {settingsTab === "about" && (
             <div className="space-y-6">
               <div className="flex items-center gap-4 pb-4 border-white/5 border-b">
-                <div className="bg-white/10 p-3 rounded-2xl">
-                  <FaUserAstronaut className="size-12 text-white" />
+                <div className="bg-white/10 p-3 rounded-xl">
+                  <FaUserAstronaut className="size-10 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-xl">GlassOS</h3>
-                  <p className="text-white/60 text-xs">
-                    Version 1.0.0 (Build 2026.07)
+                  <h3 className="font-medium text-lg text-white">GlassOS</h3>
+                  <p className="text-neutral-400 text-xs font-mono">
+                    v1.0.0
                   </p>
                 </div>
               </div>
 
               <div>
-                <h4 className="mb-3 font-semibold text-white/70 text-sm select-none">
-                  Device Specifications
+                <h4 className="mb-3 font-mono text-[10px] uppercase tracking-widest text-neutral-400 select-none">
+                  System Info
                 </h4>
-                <div className="gap-3 grid grid-cols-1 md:grid-cols-2 text-white/80 text-xs">
+                <div className="gap-3 grid grid-cols-1 md:grid-cols-2 text-neutral-300 text-xs">
                   {Object.entries(deviceInfo).map(([key, val]) => (
                     <div
                       key={key}
-                      className="flex justify-between bg-white/5 backdrop-blur-md p-2.5 border border-white/5 rounded-xl"
+                      className="flex justify-between bg-white/5 p-2.5 border border-white/5 rounded-xl"
                     >
-                      <span className="text-white/40">{key}</span>
+                      <span className="text-neutral-400">{key}</span>
                       <span
-                        className="max-w-[60%] font-medium text-right truncate"
+                        className="max-w-[60%] font-medium text-right truncate text-white"
                         title={String(val)}
                       >
                         {val}
@@ -1373,8 +1373,8 @@ export default function Home() {
               </div>
 
               <div>
-                <h4 className="mb-3 font-semibold text-white/70 text-sm select-none">
-                  System Applications
+                <h4 className="mb-3 font-mono text-[10px] uppercase tracking-widest text-neutral-400 select-none">
+                  Applications
                 </h4>
                 <div className="gap-3 grid grid-cols-2">
                   {initialApps.map((app) => {
@@ -1383,24 +1383,24 @@ export default function Home() {
                     return (
                       <div
                         key={app.label}
-                        className="flex justify-between items-center bg-white/5 hover:bg-white/10 backdrop-blur-md p-3 border border-white/5 rounded-xl transition-all"
+                        className="flex justify-between items-center bg-white/5 p-2.5 border border-white/5 rounded-xl"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <app.icon className="size-5 text-white/70 shrink-0" />
+                          <app.icon className="size-4 text-neutral-400 shrink-0" />
                           <div className="min-w-0">
-                            <div className="font-semibold text-xs truncate">
+                            <div className="font-medium text-xs text-white truncate">
                               {app.label}
                             </div>
-                            <div className="text-[10px] text-white/40">
-                              {isOpen ? "Running" : "Closed"}
+                            <div className="text-[10px] text-neutral-400">
+                              {isOpen ? "Active" : "Idle"}
                             </div>
                           </div>
                         </div>
                         <button
                           onClick={() => handleAppClick(app.label)}
-                          className="bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-lg font-semibold text-[10px] text-white transition-all cursor-pointer shrink-0"
+                          className="bg-white/10 hover:bg-white/20 px-2.5 py-1 rounded-md font-medium text-xs text-white transition-all cursor-pointer shrink-0"
                         >
-                          {isOpen ? "Focus" : "Launch"}
+                          Open
                         </button>
                       </div>
                     );
@@ -1577,14 +1577,14 @@ export default function Home() {
 
   const renderNotepad = () => {
     return (
-      <div className="flex flex-col flex-1 bg-amber-50/5 backdrop-blur-md p-4 text-stone-100">
-        <div className="flex items-center gap-2 mb-2 pb-2 border-white/5 border-b select-none">
+      <div className="flex flex-col flex-1 bg-zinc-950/60 backdrop-blur-xl p-4 text-neutral-200">
+        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/[0.06] select-none">
           <button
             onClick={() => {
               alert("New file created!");
               setNotepadText("");
             }}
-            className="hover:bg-white/10 px-3 py-1 rounded text-white text-xs transition-all cursor-pointer"
+            className="hover:bg-white/[0.08] px-2.5 py-1 rounded-md text-neutral-300 hover:text-white text-xs transition-all cursor-pointer font-medium"
           >
             New
           </button>
@@ -1592,7 +1592,7 @@ export default function Home() {
             onClick={() => {
               alert("Text saved to local device (simulated)");
             }}
-            className="hover:bg-white/10 px-3 py-1 rounded text-white text-xs transition-all cursor-pointer"
+            className="hover:bg-white/[0.08] px-2.5 py-1 rounded-md text-neutral-300 hover:text-white text-xs transition-all cursor-pointer font-medium"
           >
             Save
           </button>
@@ -1600,8 +1600,8 @@ export default function Home() {
         <textarea
           value={notepadText}
           onChange={(e) => setNotepadText(e.target.value)}
-          className="flex-1 bg-transparent p-2 border-none outline-none font-sans text-white/95 placeholder:text-white/20 text-sm leading-relaxed resize-none"
-          placeholder="Start writing..."
+          className="flex-1 bg-transparent p-2 border-none outline-none font-sans text-neutral-100 placeholder:text-neutral-600 text-xs leading-relaxed resize-none font-mono"
+          placeholder="Start typing..."
         />
       </div>
     );
@@ -1636,39 +1636,39 @@ export default function Home() {
     };
 
     return (
-      <div className="flex flex-col flex-1 bg-zinc-950/50 backdrop-blur-md p-6 overflow-y-auto text-white">
-        <div className="flex justify-between items-center mb-4 select-none shrink-0">
+      <div className="flex flex-col flex-1 bg-zinc-950/60 backdrop-blur-xl p-5 overflow-y-auto text-neutral-200">
+        <div className="flex justify-between items-center mb-3 select-none shrink-0">
           <div>
-            <h3 className="font-bold text-lg">Productivity To-Do</h3>
-            <p className="text-white/40 text-xs">
+            <h3 className="font-medium text-white text-sm tracking-tight">Tasks</h3>
+            <p className="text-neutral-400 text-xs">
               {activeCount} tasks remaining
             </p>
           </div>
-          <div className="font-semibold text-blue-400 text-xs">
+          <div className="font-mono text-neutral-300 text-xs">
             {progress}% Done
           </div>
         </div>
 
-        <div className="bg-white/10 mb-6 rounded-full w-full h-1.5 overflow-hidden shrink-0">
+        <div className="bg-white/10 mb-5 rounded-full w-full h-1 overflow-hidden shrink-0">
           <div
-            className="bg-blue-500 h-full transition-all duration-300"
+            className="bg-white h-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           ></div>
         </div>
 
-        <form onSubmit={handleAddTodo} className="flex gap-2 mb-6 shrink-0">
+        <form onSubmit={handleAddTodo} className="flex gap-2 mb-5 shrink-0">
           <input
             type="text"
             value={todoInput}
             onChange={(e) => setTodoInput(e.target.value)}
-            className="flex-1 bg-white/5 px-4 py-2 border border-white/10 focus:border-blue-500 rounded-xl outline-none text-sm transition-colors"
+            className="flex-1 bg-white/[0.04] focus:bg-white/[0.08] px-3 py-1.5 border border-white/10 focus:border-white/20 rounded-lg outline-none text-xs placeholder:text-neutral-500 transition-colors"
             placeholder="Add a new task..."
           />
           <button
             type="submit"
-            className="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-xl font-semibold text-white text-sm transition-colors cursor-pointer"
+            className="flex items-center gap-1 bg-white hover:bg-neutral-200 px-3 py-1.5 rounded-lg font-medium text-zinc-950 text-xs transition-colors cursor-pointer"
           >
-            <Icon icon="mdi:plus" width={16} />
+            <Icon icon="mdi:plus" width={14} />
             <span>Add</span>
           </button>
         </form>
@@ -1677,10 +1677,10 @@ export default function Home() {
           {todos.map((todo) => (
             <div
               key={todo.id}
-              className="flex justify-between items-center bg-white/5 hover:bg-white/10 px-4 py-3 border border-white/5 rounded-xl transition-colors"
+              className="flex justify-between items-center bg-white/[0.03] hover:bg-white/[0.06] px-3 py-2.5 border border-white/[0.06] rounded-lg transition-colors"
             >
               <div
-                className="flex items-center gap-3 cursor-pointer"
+                className="flex items-center gap-2.5 cursor-pointer"
                 onClick={() => toggleTodo(todo.id)}
               >
                 <Icon
@@ -1690,21 +1690,21 @@ export default function Home() {
                       : "mdi:checkbox-blank-circle-outline"
                   }
                   className={
-                    todo.completed ? "text-green-400" : "text-white/40"
+                    todo.completed ? "text-emerald-400" : "text-neutral-500"
                   }
-                  width={20}
+                  width={16}
                 />
                 <span
-                  className={`text-sm ${todo.completed ? "line-through text-white/40" : "text-white"}`}
+                  className={`text-xs ${todo.completed ? "line-through text-neutral-500" : "text-neutral-200"}`}
                 >
                   {todo.text}
                 </span>
               </div>
               <button
                 onClick={() => deleteTodo(todo.id)}
-                className="p-1 rounded text-white/40 hover:text-red-400 transition-colors cursor-pointer"
+                className="p-1 rounded text-neutral-500 hover:text-rose-400 transition-colors cursor-pointer"
               >
-                <Icon icon="mdi:delete" width={16} />
+                <Icon icon="mdi:delete" width={14} />
               </button>
             </div>
           ))}
@@ -1801,7 +1801,7 @@ export default function Home() {
 
       {currentScreen !== "LOGIN" ? (
         <>
-          <div className="top-0 z-1 absolute flex flex-row justify-between items-center bg-black/20 backdrop-blur-md px-4 border-white/10 border-b w-full h-13 glass-navbar">
+          <div className="top-0 z-50 absolute flex flex-row justify-between items-center bg-zinc-950/80 backdrop-blur-xl px-4 border-b border-white/[0.08] w-full h-11">
             <div className="flex flex-col justify-center items-start text-white text-start leading-none select-none">
               <DateTime />
             </div>
@@ -1919,27 +1919,30 @@ export default function Home() {
           })}
         </>
       ) : (
-        <div className="z-1 relative flex flex-col justify-center items-center gap-4 size-full text-center select-none">
-          <div className="bg-white/10 backdrop-blur-lg px-6 pt-8 pb-4 rounded-full">
-            <FaUserAstronaut className="size-20 text-white/80" />
-          </div>
-          <h1 className="font-bold text-white text-3xl">Glass Astronaut</h1>
+        <div className="z-10 relative flex flex-col justify-center items-center size-full select-none">
+          <div className="flex flex-col items-center bg-zinc-950/60 backdrop-blur-2xl p-8 border border-white/[0.08] rounded-2xl w-80 shadow-2xl text-center">
+            <div className="flex justify-center items-center bg-white/[0.06] mb-4 border border-white/10 rounded-full w-16 h-16 text-neutral-300">
+              <FaUserAstronaut className="size-8 text-neutral-200" />
+            </div>
+            <h1 className="font-medium text-white text-base tracking-tight">GlassOS</h1>
+            <p className="mt-0.5 text-neutral-400 text-xs">Enter PIN to unlock</p>
 
-          <div className="space-y-2">
-            <input
-              type="password"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              maxLength={4}
-              value={pin}
-              onChange={handleChange}
-              placeholder="PIN"
-              name="password"
-              className="bg-white/10 backdrop-blur-xl px-4 py-3 border border-white/10 focus:border-none rounded-full outline-none focus:ring-2 focus:ring-white/20 w-full font-semibold tabular-nums text-white placeholder:text-white/30 text-2xl text-center tracking-0 focus:tracking-[0.5em] transition-all"
-            />
-            <label htmlFor="password" className="text-white/70 text-sm">
-              Hint: 1234
-            </label>
+            <div className="mt-6 w-full space-y-2">
+              <input
+                type="password"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={4}
+                value={pin}
+                onChange={handleChange}
+                placeholder="••••"
+                name="password"
+                className="bg-white/[0.04] focus:bg-white/[0.08] px-4 py-2.5 border border-white/10 focus:border-white/20 rounded-lg outline-none w-full font-mono text-center text-white text-lg tracking-[0.5em] placeholder:text-neutral-600 transition-all"
+              />
+              <p className="text-[10px] text-neutral-500 font-mono">
+                PIN: 1234
+              </p>
+            </div>
           </div>
         </div>
       )}

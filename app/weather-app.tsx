@@ -19,6 +19,9 @@ import {
   BsEyeFill,
   BsSpeedometer2,
   BsCompass,
+  BsGeoAltFill,
+  BsExclamationTriangleFill,
+  BsCalendar3,
 } from "react-icons/bs";
 import { WiSunset, WiSunrise } from "react-icons/wi";
 
@@ -37,49 +40,44 @@ const getWeatherDetails = (code: number) => {
       label: "Clear Sky",
       icon: BsSunFill,
       color: "text-amber-400",
-      gradient: "from-sky-400/20 to-blue-600/30",
-      bgStyle:
-        "bg-linear-to-br from-sky-500/20 via-sky-600/10 to-indigo-950/30",
+      gradient: "from-amber-400/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([1, 2, 3].includes(code)) {
     return {
       label: "Partly Cloudy",
       icon: BsCloudSunFill,
-      color: "text-gray-300",
-      gradient: "from-blue-500/20 to-slate-600/20",
-      bgStyle:
-        "bg-linear-to-br from-blue-600/15 via-slate-700/10 to-zinc-900/30",
+      color: "text-neutral-300",
+      gradient: "from-sky-400/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([45, 48].includes(code)) {
     return {
       label: "Foggy",
       icon: BsCloudFog2Fill,
-      color: "text-slate-400",
-      gradient: "from-zinc-500/25 to-slate-700/25",
-      bgStyle:
-        "bg-linear-to-br from-zinc-700/20 via-slate-800/10 to-stone-900/35",
+      color: "text-neutral-400",
+      gradient: "from-neutral-400/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([51, 53, 55].includes(code)) {
     return {
       label: "Drizzle",
       icon: BsCloudDrizzleFill,
-      color: "text-blue-300",
-      gradient: "from-slate-600/25 to-blue-800/25",
-      bgStyle:
-        "bg-linear-to-br from-slate-600/20 via-blue-900/10 to-zinc-950/40",
+      color: "text-sky-300",
+      gradient: "from-sky-300/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([61, 63, 65, 80, 81, 82].includes(code)) {
     return {
       label: "Rainy",
       icon: BsCloudRainHeavyFill,
-      color: "text-blue-400",
-      gradient: "from-slate-700/30 to-blue-900/30",
-      bgStyle:
-        "bg-linear-to-br from-slate-800/25 via-blue-950/15 to-neutral-950/45",
+      color: "text-sky-400",
+      gradient: "from-sky-400/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([71, 73, 75, 77, 85, 86].includes(code)) {
@@ -87,28 +85,25 @@ const getWeatherDetails = (code: number) => {
       label: "Snowy",
       icon: BsSnow,
       color: "text-sky-200",
-      gradient: "from-blue-100/10 to-indigo-900/20",
-      bgStyle:
-        "bg-linear-to-br from-blue-300/10 via-indigo-950/15 to-zinc-950/35",
+      gradient: "from-sky-200/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   if ([95, 96, 99].includes(code)) {
     return {
       label: "Thunderstorm",
       icon: BsCloudLightningRainFill,
-      color: "text-yellow-400",
-      gradient: "from-yellow-950/20 to-zinc-950/40",
-      bgStyle:
-        "bg-linear-to-br from-zinc-900/30 via-yellow-950/10 to-black/50",
+      color: "text-amber-400",
+      gradient: "from-amber-400/10 to-transparent",
+      bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
     };
   }
   return {
     label: "Cloudy",
     icon: BsCloudsFill,
-    color: "text-gray-300",
-    gradient: "from-zinc-500/20 to-zinc-700/20",
-    bgStyle:
-      "bg-linear-to-br from-slate-700/20 via-zinc-800/10 to-neutral-900/30",
+    color: "text-neutral-300",
+    gradient: "from-neutral-300/10 to-transparent",
+    bgStyle: "bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08]",
   };
 };
 
@@ -468,7 +463,9 @@ export default function WeatherApp() {
               onClick={() => setQuery("")}
               className="top-1/2 right-4 absolute hover:bg-white/10 p-1 rounded-full text-white/50 hover:text-white text-xs -translate-y-1/2"
             >
-              ✕
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
           )}
 
@@ -507,12 +504,12 @@ export default function WeatherApp() {
         <div className="hidden md:flex gap-1.5 overflow-x-auto select-none no-scrollbar shrink-0">
           <button
             onClick={detectMyLocation}
-            className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all flex items-center gap-1 shrink-0 ${isMyLocationSelected
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold backdrop-blur-md transition-all flex items-center gap-1.5 shrink-0 ${isMyLocationSelected
               ? "bg-blue-500/25 text-white border border-blue-500/25 shadow-md"
               : "bg-white/5 hover:bg-white/10 text-white/70 border border-white/5"
               }`}
           >
-            📍 My Location
+            <BsGeoAltFill className="size-3 text-sky-400 shrink-0" /> My Location
           </button>
           {PRESET_CITIES.map((city: any) => (
             <button
@@ -533,8 +530,9 @@ export default function WeatherApp() {
       </div>
 
       {error && (
-        <div className="bg-amber-500/10 mx-4 mb-2 px-4 py-2.5 border border-amber-500/25 rounded-xl font-medium text-amber-300 text-xs select-none shrink-0">
-          ⚠️ {error}
+        <div className="flex items-center gap-1.5 bg-amber-500/10 mx-4 mb-2 px-4 py-2.5 border border-amber-500/25 rounded-xl font-medium text-amber-300 text-xs select-none shrink-0">
+          <BsExclamationTriangleFill className="size-3.5 text-amber-400 shrink-0" />
+          <span>{error}</span>
         </div>
       )}
 
@@ -604,7 +602,7 @@ export default function WeatherApp() {
             <div className="flex flex-col justify-between lg:col-span-6 bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl h-full select-none">
               <div>
                 <h3 className="flex items-center gap-1.5 mb-3 font-semibold text-white/40 text-xs uppercase tracking-wider">
-                  📅 10-Day Forecast
+                  <BsCalendar3 className="text-white/40" /> 10-Day Forecast
                 </h3>
                 <div className="divide-y divide-white/5">
                   {daily.time.map((time: string, idx: number) => {
@@ -675,7 +673,7 @@ export default function WeatherApp() {
             <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
                 <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
-                  ☀️ UV Index
+                  <BsSunFill className="text-white/40" /> UV Index
                 </h4>
                 <div className="font-light text-white text-3xl">{uvVal}</div>
                 <div className="mt-1 font-semibold text-white/90 text-sm">
@@ -740,7 +738,7 @@ export default function WeatherApp() {
             <div className="flex flex-col justify-between bg-white/5 shadow-xl backdrop-blur-md p-4 border border-white/5 rounded-2xl select-none">
               <div>
                 <h4 className="flex items-center gap-1.5 mb-2 font-semibold text-white/40 text-xs uppercase tracking-wider">
-                  🌅 Sunrise & Sunset
+                  <WiSunset className="text-white/40 text-base" /> Sun Cycle
                 </h4>
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-1.5">
@@ -794,11 +792,11 @@ export default function WeatherApp() {
                 <p className="text-[10px] text-white/40 leading-relaxed">
                   {Math.round(current?.apparent_temperature ?? tempC) <
                     Math.round(tempC)
-                    ? "Wind chill is making it feel colder than actual."
+                    ? "Wind chill is lowering perceived temperature."
                     : Math.round(current?.apparent_temperature ?? tempC) >
                       Math.round(tempC)
-                      ? "Humidity is making it feel warmer than actual."
-                      : "Similar to the actual temperature."}
+                      ? "Humidity is raising perceived temperature."
+                      : "Matches actual temperature."}
                 </p>
               </div>
             </div>
@@ -812,7 +810,7 @@ export default function WeatherApp() {
               </div>
               <div className="mt-4">
                 <p className="text-[10px] text-white/40 leading-relaxed">
-                  The dew point is {dewPoint}° right now.
+                  Dew point: {dewPoint}°.
                 </p>
               </div>
             </div>
@@ -837,7 +835,7 @@ export default function WeatherApp() {
               </div>
               <div className="mt-4">
                 <p className="text-[10px] text-white/40 leading-relaxed">
-                  It's perfectly clear.
+                  Clear conditions.
                 </p>
               </div>
             </div>
@@ -953,9 +951,9 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
     return (
       <div
         onClick={onClick}
-        className="flex flex-col justify-center items-center bg-white/5 hover:bg-white/10 shadow-xl backdrop-blur-md p-4 border border-white/10 rounded-3xl w-60 h-32 transition-all cursor-pointer select-none"
+        className="flex flex-col justify-center items-center bg-zinc-950/60 hover:bg-zinc-900/60 backdrop-blur-xl p-4 border border-white/[0.08] rounded-xl w-60 h-32 transition-all cursor-pointer select-none"
       >
-        <div className="border-2 border-white/20 border-t-white/80 rounded-full w-6 h-6 animate-spin"></div>
+        <div className="border-2 border-white/20 border-t-white/80 rounded-full w-5 h-5 animate-spin"></div>
       </div>
     );
   }
@@ -968,33 +966,33 @@ export function WeatherWidget({ onClick }: { onClick?: () => void }) {
   return (
     <div
       onClick={onClick}
-      className="group flex flex-col justify-between bg-white/5 hover:bg-white/10 shadow-xl backdrop-blur-md p-4 border border-white/10 hover:border-white/20 rounded-3xl w-60 h-32 transition-all cursor-pointer select-none"
+      className="group flex flex-col justify-between bg-zinc-950/60 hover:bg-zinc-900/60 backdrop-blur-xl p-4 border border-white/[0.08] hover:border-white/15 rounded-xl w-60 h-32 transition-all duration-180 cursor-pointer select-none"
     >
       <div className="flex justify-between items-start">
         <div className="min-w-0">
-          <h3 className="font-bold text-white text-sm truncate leading-snug">
+          <h3 className="font-medium text-white text-sm truncate leading-snug tracking-tight">
             {location.name}
           </h3>
-          <p className="mt-0.5 text-[10px] text-white/50 truncate leading-none">
+          <p className="mt-0.5 text-[10px] text-neutral-400 truncate leading-none">
             {location.country || "Lithuania"}
           </p>
         </div>
         <IconComponent
-          className={`size-6 ${details.color} shrink-0 drop-shadow-sm group-hover:scale-110 transition-transform`}
+          className={`size-5 ${details.color} shrink-0 group-hover:scale-105 transition-transform`}
         />
       </div>
 
       <div className="flex justify-between items-end">
         <div>
-          <span className="font-light text-white text-4xl tracking-tighter">
+          <span className="font-normal text-white text-3xl tracking-tight">
             {Math.round(current?.temperature_2m ?? 0)}
           </span>
-          <span className="font-light text-white text-lg">°</span>
-          <p className="mt-0.5 font-semibold text-[10px] text-white/80 leading-none">
+          <span className="font-light text-white text-base">°</span>
+          <p className="mt-0.5 font-medium text-[10px] text-neutral-300 leading-none">
             {details.label}
           </p>
         </div>
-        <div className="font-semibold text-[10px] text-white/55 text-right">
+        <div className="font-medium text-[10px] text-neutral-400 text-right">
           <span>H: {Math.round(daily?.temperature_2m_max?.[0] ?? 0)}°</span>
           <span className="ml-1.5">
             L: {Math.round(daily?.temperature_2m_min?.[0] ?? 0)}°

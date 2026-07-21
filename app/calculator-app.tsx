@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { evaluate } from "mathjs";
 
 const MAX_DISPLAY = 12;
@@ -65,41 +65,10 @@ interface ButtonProps {
 }
 
 const CalcButton: React.FC<ButtonProps> = ({ label, onClick, className = "" }) => {
-  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const btn = e.currentTarget;
-    const rect = btn.getBoundingClientRect();
-    const ripple = document.createElement("span");
-    const size = Math.max(rect.width, rect.height);
-
-    ripple.style.position = "absolute";
-    ripple.style.borderRadius = "50%";
-    ripple.style.pointerEvents = "none";
-    ripple.style.width = `${size}px`;
-    ripple.style.height = `${size}px`;
-    ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
-    ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
-    ripple.style.background = "rgba(255, 255, 255, 0.25)";
-    ripple.style.transform = "scale(0)";
-    ripple.style.opacity = "1";
-    ripple.style.transition = "transform 0.4s ease-out, opacity 0.4s ease-out";
-
-    btn.appendChild(ripple);
-
-    requestAnimationFrame(() => {
-      ripple.style.transform = "scale(2.5)";
-      ripple.style.opacity = "0";
-    });
-
-    setTimeout(() => {
-      ripple.remove();
-    }, 400);
-  };
-
   return (
     <button
-      className={`calc-btn relative overflow-hidden select-none outline-none ${className}`}
+      className={`calc-btn relative overflow-hidden select-none outline-none transition-all duration-150 ${className}`}
       onClick={onClick}
-      onMouseDown={handleMouseDown}
     >
       {label}
     </button>
@@ -246,7 +215,7 @@ export default function CalculatorApp() {
       { l: "0", cls: "wide", fn: () => input("0") },
       { l: ".", fn: () => input(".") },
       { l: "⌫", fn: backspace },
-      { l: "=", cls: "equals", fn: calculate },
+      { l: "=", cls: "equals-btn", fn: calculate },
     ],
   ];
 
@@ -295,21 +264,21 @@ export default function CalculatorApp() {
   }, [gridMode]);
 
   return (
-    <div className={`calculator-container h-full flex flex-col p-4 text-white overflow-y-auto no-scrollbar`}>
-      <div className="flex flex-wrap justify-between items-center gap-2 mb-4 shrink-0">
-        <div className="flex items-center gap-1.5 bg-white/5 p-1 border border-white/10 rounded-full font-semibold text-xs">
-          <span className="px-2 py-0.5 text-zinc-300">Memory:</span>
-          <span className="bg-white/10 px-2 py-0.5 rounded-full font-mono text-white">
+    <div className="calculator-container h-full flex flex-col p-4 text-white overflow-y-auto no-scrollbar">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-3 shrink-0">
+        <div className="flex items-center gap-1.5 bg-white/[0.04] border border-white/[0.08] px-2.5 py-1 rounded-lg text-xs">
+          <span className="text-neutral-400 font-medium">Memory</span>
+          <span className="font-mono text-neutral-200 bg-white/[0.06] px-1.5 py-0.5 rounded">
             {formatResult(memory)}
           </span>
         </div>
-        <div className="flex bg-black/30 p-1 border border-white/5 rounded-xl mode-tabs">
+        <div className="flex bg-zinc-950/80 p-0.5 border border-white/10 rounded-lg">
           {(["standard", "scientific", "both"] as const).map((m) => (
             <button
               key={m}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all capitalize select-none cursor-pointer ${gridMode === m
-                ? "bg-white/10 text-white shadow-sm border border-white/10"
-                : "text-zinc-400 hover:text-zinc-200"
+              className={`px-2.5 py-1 text-xs font-medium rounded-md transition-all capitalize select-none cursor-pointer ${gridMode === m
+                ? "bg-white/10 text-white shadow-sm"
+                : "text-neutral-400 hover:text-neutral-200"
                 } ${m === "both" ? "hidden md:inline-block" : ""}`}
               onClick={() => setGridMode(m)}
             >
@@ -319,20 +288,19 @@ export default function CalculatorApp() {
         </div>
       </div>
 
-      <div className={`display-panel flex flex-col justify-end items-end p-4 mb-4 min-h-[96px] bg-black/25 border border-white/10 rounded-2xl shadow-inner relative overflow-hidden select-all shrink-0 ${isError ? "border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.2)]" : ""}`}>
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-[shimmer_3s_infinite] pointer-events-none" />
-        <div className="w-full min-h-[20px] text-zinc-400 text-sm text-right break-all select-none display-expr">
+      <div className={`display-panel flex flex-col justify-end items-end p-4 mb-3 min-h-[90px] bg-zinc-950/60 border border-white/[0.08] rounded-xl relative overflow-hidden select-all shrink-0 ${isError ? "border-red-500/40" : ""}`}>
+        <div className="w-full min-h-[18px] text-neutral-400 text-xs text-right break-all select-none tracking-wide">
           {history}
         </div>
-        <div className="mt-1 w-full font-light text-zinc-100 text-3xl sm:text-4xl text-right break-all tracking-tight display-value">
+        <div className="mt-1 w-full font-sans font-normal text-white text-3xl sm:text-4xl text-right break-all tracking-tight">
           {display}
         </div>
       </div>
 
       <div className="flex flex-col flex-1 justify-center">
         {gridMode === "both" ? (
-          <div className="flex flex-row items-stretch gap-4 w-full h-full">
-            <div className="flex-1 items-center gap-2 grid grid-cols-4">
+          <div className="flex flex-row items-stretch gap-3 w-full h-full">
+            <div className="flex-1 items-center gap-1.5 grid grid-cols-4">
               {sciRows.flat().map((b, i) => (
                 <CalcButton
                   key={`sci-${i}`}
@@ -343,8 +311,8 @@ export default function CalculatorApp() {
               ))}
             </div>
 
-            <div className="self-stretch bg-white/10 rounded-full w-px" />
-            <div className="flex-1 items-center gap-2 grid grid-cols-4">
+            <div className="self-stretch bg-white/10 w-px" />
+            <div className="flex-1 items-center gap-1.5 grid grid-cols-4">
               {stdRows.flat().map((b, i) => (
                 <CalcButton
                   key={`std-${i}`}
@@ -356,7 +324,7 @@ export default function CalculatorApp() {
             </div>
           </div>
         ) : (
-          <div className={`grid grid-cols-4 gap-2 h-full items-center ${gridMode === "scientific" ? "scientific-grid" : ""}`}>
+          <div className={`grid grid-cols-4 gap-1.5 h-full items-center ${gridMode === "scientific" ? "scientific-grid" : ""}`}>
             {(gridMode === "scientific" ? sciRows.flat() : stdRows.flat()).map((b, i) => (
               <CalcButton
                 key={`btn-${i}`}

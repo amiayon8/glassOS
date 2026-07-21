@@ -1,32 +1,37 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
+import { useState, useEffect } from "react";
 
 export default function DateTime() {
-    const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState<Date | null>(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow(new Date());
-        }, 1000);
+  useEffect(() => {
+    setNow(new Date());
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 1000);
 
-        return () => clearInterval(interval);
-    }, []);
+    return () => clearInterval(interval);
+  }, []);
 
-    return (
-        <>
-            <span className="font-semibold text-[15px] text-white tracking-[-0.01em]">
-                {new Intl.DateTimeFormat(undefined, {
-                    hour: "numeric",
-                    minute: "2-digit",
-                }).format(now)}
-            </span>
+  if (!now) return null;
 
-            <span className="mt-0.5 font-medium text-[11px] text-white/60 tracking-wide">
-                {new Intl.DateTimeFormat(undefined, {
-                    dateStyle: "short",
-                }).format(now)}
-            </span>
-        </>
-    )
+  return (
+    <div className="flex items-center gap-2 font-mono text-xs text-neutral-300">
+      <span className="font-semibold text-white">
+        {new Intl.DateTimeFormat(undefined, {
+          hour: "numeric",
+          minute: "2-digit",
+        }).format(now)}
+      </span>
+      <span className="text-neutral-500">•</span>
+      <span className="text-neutral-400">
+        {new Intl.DateTimeFormat(undefined, {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }).format(now)}
+      </span>
+    </div>
+  );
 }

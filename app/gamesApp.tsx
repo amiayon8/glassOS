@@ -230,7 +230,7 @@ export function Games() {
                         <button
                             onClick={handleClosePlayer}
                             className="flex justify-center items-center bg-white/5 hover:bg-white/15 p-2 border border-white/5 rounded-xl text-gray-300 hover:text-white transition-all cursor-pointer"
-                            title="Back to Library"
+                            title="Back"
                         >
                             <Icon icon="mdi:arrow-left" width={20} />
                         </button>
@@ -253,21 +253,21 @@ export function Games() {
                                 ? "bg-amber-500/20 border-amber-500/30 text-amber-400"
                                 : "bg-white/5 border-white/5 text-gray-300 hover:text-white"
                                 }`}
-                            title={isFav ? "Remove from Favorites" : "Add to Favorites"}
+                            title={isFav ? "Remove favorite" : "Add favorite"}
                         >
                             <Icon icon={isFav ? "mdi:star" : "mdi:star-outline"} width={20} />
                         </button>
                         <button
                             onClick={refreshIframe}
                             className="flex justify-center items-center bg-white/5 hover:bg-white/15 p-2 border border-white/5 rounded-xl text-gray-300 hover:text-white transition-all cursor-pointer"
-                            title="Reload Game"
+                            title="Refresh"
                         >
                             <Icon icon="mdi:refresh" width={20} />
                         </button>
                         <button
                             onClick={toggleFullscreen}
                             className="flex justify-center items-center bg-white/5 hover:bg-white/15 p-2 border border-white/5 rounded-xl text-gray-300 hover:text-white transition-all cursor-pointer"
-                            title={isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+                            title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
                         >
                             <Icon
                                 icon={isFullscreen ? "mdi:fullscreen-exit" : "mdi:fullscreen"}
@@ -292,34 +292,34 @@ export function Games() {
     }
 
     return (
-        <div className="flex flex-col flex-1 bg-zinc-950/40 backdrop-blur-md h-full overflow-y-hidden text-white select-none">
-            <div className="flex flex-col gap-3 bg-white/5 p-4 border-white/5 border-b shrink-0">
+        <div className="flex flex-col flex-1 bg-zinc-950/60 backdrop-blur-xl h-full overflow-y-hidden text-white select-none">
+            <div className="flex flex-col gap-3 bg-white/[0.02] p-4 border-b border-white/[0.08] shrink-0">
                 <div className="flex items-center gap-3">
                     <div className="relative flex-1">
                         <Icon
                             icon="mdi:magnify"
-                            className="top-1/2 left-3.5 absolute text-white/40 -translate-y-1/2"
-                            width={18}
+                            className="top-1/2 left-3.5 absolute text-neutral-400 -translate-y-1/2"
+                            width={16}
                         />
                         <input
                             type="text"
-                            placeholder="Search 400+ games..."
+                            placeholder="Search games..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-white/5 focus:bg-white/10 py-2 pr-4 pl-10 border border-white/10 focus:border-violet-500/50 rounded-xl outline-none w-full placeholder:text-white/30 text-sm transition-all"
+                            className="bg-white/[0.04] focus:bg-white/[0.08] py-2 pr-4 pl-9 border border-white/10 focus:border-white/20 rounded-lg outline-none w-full placeholder:text-neutral-500 text-xs transition-all"
                         />
                         {searchQuery && (
                             <button
                                 onClick={() => setSearchQuery("")}
-                                className="top-1/2 right-3 absolute text-white/40 hover:text-white transition-colors -translate-y-1/2 cursor-pointer"
+                                className="top-1/2 right-3 absolute text-neutral-400 hover:text-white transition-colors -translate-y-1/2 cursor-pointer"
                             >
-                                <Icon icon="mdi:close" width={16} />
+                                <Icon icon="mdi:close" width={14} />
                             </button>
                         )}
                     </div>
                 </div>
 
-                <div className="flex gap-1.5 pb-1 overflow-x-auto no-scrollbar shrink-0">
+                <div className="flex gap-1.5 pb-0.5 overflow-x-auto no-scrollbar shrink-0">
                     {["All", "Favorites", "Recent", "Action & Arcade", "Puzzle", "Simulation", "Casual"].map((tab) => {
                         const isActive = activeTab === tab;
                         let iconName = "mdi:gamepad-variant";
@@ -334,12 +334,12 @@ export function Games() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer border ${isActive
-                                    ? "bg-violet-600 border-violet-500 text-white shadow-[0_0_12px_rgba(124,58,237,0.3)]"
-                                    : "bg-white/5 border-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition-all cursor-pointer border ${isActive
+                                    ? "bg-white text-zinc-950 border-white font-semibold"
+                                    : "bg-white/[0.03] border-white/[0.06] text-neutral-400 hover:text-white hover:bg-white/[0.08]"
                                     }`}
                             >
-                                <Icon icon={iconName} width={14} />
+                                <Icon icon={iconName} width={13} />
                                 <span>{tab}</span>
                             </button>
                         );
@@ -347,35 +347,35 @@ export function Games() {
                 </div>
             </div>
 
-            <div className="flex-1 space-y-6 p-4 overflow-y-auto">
+            <div className="flex-1 space-y-5 p-4 overflow-y-auto">
                 {activeTab === "All" && !searchQuery && featuredGame && (
-                    <div className="group relative bg-linear-to-r from-violet-900/60 to-indigo-900/60 border border-white/10 rounded-2xl min-h-35 max-h-55 aspect-21/9 overflow-hidden">
-                        <div className="absolute inset-0 opacity-40 group-hover:scale-105 transition-transform duration-700">
+                    <div className="group relative bg-zinc-900 border border-white/[0.08] rounded-xl min-h-35 max-h-52 aspect-21/9 overflow-hidden">
+                        <div className="absolute inset-0 opacity-30 group-hover:scale-105 transition-transform duration-500">
                             <img
                                 src={featuredGame.image}
                                 alt={featuredGame.name}
-                                className="blur-[2px] w-full h-full object-cover"
+                                className="blur-[1px] w-full h-full object-cover"
                             />
-                            <div className="absolute inset-0 bg-linear-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/70 to-transparent" />
                         </div>
 
                         <div className="z-10 absolute inset-0 flex flex-col justify-end p-5">
-                            <span className="bg-violet-600/90 mb-1.5 px-2 py-0.5 rounded-full w-max font-semibold text-[10px] text-white uppercase tracking-wider">
-                                Featured Game
+                            <span className="bg-white/10 backdrop-blur-md mb-1.5 px-2 py-0.5 border border-white/10 rounded-md w-max font-mono text-[10px] text-neutral-300 uppercase tracking-widest">
+                                Featured
                             </span>
-                            <h2 className="drop-shadow-md max-w-full font-bold text-white text-lg sm:text-2xl truncate tracking-wide">
+                            <h2 className="max-w-full font-medium text-white text-lg sm:text-xl truncate tracking-tight">
                                 {featuredGame.name}
                             </h2>
-                            <p className="hidden sm:block mt-1 max-w-[80%] text-[11px] text-white/75 line-clamp-2">
-                                Experience one of the top hits in GlassOS. Fast-paced, responsive gameplay. Play instantly without download.
+                            <p className="hidden sm:block mt-1 max-w-[80%] text-xs text-neutral-400 line-clamp-1">
+                                Play directly in your browser.
                             </p>
-                            <div className="mt-2.5">
+                            <div className="mt-3">
                                 <button
                                     onClick={() => handlePlayGame(featuredGame)}
-                                    className="flex items-center gap-1.5 bg-white hover:bg-violet-400 shadow-lg px-4 py-2 rounded-xl font-bold text-zinc-950 hover:text-white text-xs active:scale-95 transition-all cursor-pointer transform"
+                                    className="flex items-center gap-1.5 bg-white hover:bg-neutral-200 px-3.5 py-1.5 rounded-lg font-medium text-zinc-950 text-xs active:scale-[0.98] transition-all cursor-pointer"
                                 >
-                                    <Icon icon="mdi:play" width={16} />
-                                    <span>Play Now</span>
+                                    <Icon icon="mdi:play" width={14} />
+                                    <span>Play</span>
                                 </button>
                             </div>
                         </div>
@@ -383,30 +383,30 @@ export function Games() {
                 )}
 
                 {activeTab === "All" && !searchQuery && recentGames.length > 0 && (
-                    <div className="space-y-2.5">
+                    <div className="space-y-2">
                         <div className="flex justify-between items-center">
-                            <h3 className="font-bold text-white/60 text-xs uppercase tracking-wider">
-                                Jump Back In
+                            <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                                Recently Played
                             </h3>
                         </div>
-                        <div className="gap-3 grid grid-cols-4 sm:grid-cols-8">
+                        <div className="gap-2.5 grid grid-cols-4 sm:grid-cols-8">
                             {recentGames.map((game) => (
                                 <button
                                     key={game.slug}
                                     onClick={() => handlePlayGame(game)}
                                     className="group flex flex-col items-center gap-1.5 text-center transition-all cursor-pointer"
                                 >
-                                    <div className="relative border border-white/10 group-hover:border-violet-500/40 rounded-xl w-full aspect-square overflow-hidden group-hover:scale-105 transition-all duration-300">
+                                    <div className="relative border border-white/[0.08] group-hover:border-white/20 rounded-lg w-full aspect-square overflow-hidden transition-all duration-150">
                                         <img
                                             src={game.image}
                                             alt={game.name}
                                             className="w-full h-full object-cover"
                                         />
                                         <div className="absolute inset-0 flex justify-center items-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Icon icon="mdi:play" className="text-white" width={20} />
+                                            <Icon icon="mdi:play" className="text-white" width={18} />
                                         </div>
                                     </div>
-                                    <span className="w-full font-medium text-[10px] text-white/75 group-hover:text-white truncate">
+                                    <span className="w-full font-medium text-[10px] text-neutral-400 group-hover:text-white truncate">
                                         {game.name}
                                     </span>
                                 </button>
@@ -415,12 +415,12 @@ export function Games() {
                     </div>
                 )}
 
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                     <div className="flex justify-between items-center">
-                        <h3 className="font-bold text-white/60 text-xs uppercase tracking-wider">
-                            {activeTab === "All" ? "All Games" : `${activeTab} Games`}
+                        <h3 className="font-mono text-[10px] uppercase tracking-widest text-neutral-400">
+                            {activeTab === "All" ? "Library" : `${activeTab}`}
                         </h3>
-                        <span className="font-medium text-white/40 text-xs">
+                        <span className="font-mono text-[10px] text-neutral-500">
                             {filteredGames.length} {filteredGames.length === 1 ? "game" : "games"}
                         </span>
                     </div>
@@ -432,13 +432,13 @@ export function Games() {
                                 return (
                                     <div
                                         key={game.slug}
-                                        className="group relative flex flex-col bg-white/5 hover:bg-white/10 border border-white/5 hover:border-white/15 rounded-xl overflow-hidden transition-all hover:-translate-y-1 duration-300 transform"
+                                        className="group relative flex flex-col bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.08] hover:border-white/15 rounded-lg overflow-hidden transition-all duration-150"
                                     >
-                                        <div className="relative bg-zinc-900 border-white/5 border-b w-full aspect-4/3 overflow-hidden">
+                                        <div className="relative bg-zinc-900 border-b border-white/[0.06] w-full aspect-4/3 overflow-hidden">
                                             <img
                                                 src={game.image}
                                                 alt={game.name}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                 loading="lazy"
                                             />
 
@@ -447,14 +447,14 @@ export function Games() {
                                                     e.stopPropagation();
                                                     toggleFavorite(game.slug);
                                                 }}
-                                                className={`absolute top-2 right-2 p-1.5 rounded-lg border transition-all cursor-pointer z-20 ${isFav
-                                                    ? "bg-amber-500/20 border-amber-500/30 text-amber-400 opacity-100"
-                                                    : "bg-black/60 border-white/10 text-white/60 hover:text-white opacity-0 group-hover:opacity-100"
+                                                className={`absolute top-2 right-2 p-1.5 rounded-md border transition-all cursor-pointer z-20 ${isFav
+                                                    ? "bg-amber-400/20 border-amber-400/30 text-amber-400 opacity-100"
+                                                    : "bg-black/60 border-white/10 text-neutral-400 hover:text-white opacity-0 group-hover:opacity-100"
                                                     }`}
                                             >
                                                 <Icon
                                                     icon={isFav ? "mdi:star" : "mdi:star-outline"}
-                                                    width={14}
+                                                    width={13}
                                                 />
                                             </button>
 
@@ -462,8 +462,8 @@ export function Games() {
                                                 onClick={() => handlePlayGame(game)}
                                                 className="z-10 absolute inset-0 flex justify-center items-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
                                             >
-                                                <div className="flex justify-center items-center bg-violet-600 shadow-lg rounded-full w-10 h-10 text-white scale-75 group-hover:scale-100 transition-all duration-300 transform">
-                                                    <Icon icon="mdi:play" width={20} />
+                                                <div className="flex justify-center items-center bg-white rounded-md px-3 py-1.5 text-zinc-950 text-xs font-medium shadow-md">
+                                                    <Icon icon="mdi:play" width={14} className="mr-1" /> Play
                                                 </div>
                                             </div>
                                         </div>
@@ -472,14 +472,14 @@ export function Games() {
                                             onClick={() => handlePlayGame(game)}
                                             className="flex flex-col flex-1 justify-between p-2.5 cursor-pointer"
                                         >
-                                            <h4 className="font-semibold text-white/90 group-hover:text-white text-xs line-clamp-1 transition-colors">
+                                            <h4 className="font-medium text-neutral-200 group-hover:text-white text-xs line-clamp-1 transition-colors">
                                                 {game.name}
                                             </h4>
                                             <div className="flex justify-between items-center mt-2">
-                                                <span className="bg-white/5 px-1.5 py-0.5 rounded text-[9px] text-white/40">
+                                                <span className="bg-white/[0.04] px-1.5 py-0.5 rounded text-[9px] font-mono text-neutral-400">
                                                     {game.category}
                                                 </span>
-                                                <span className="flex items-center gap-0.5 font-semibold text-[9px] text-violet-400 group-hover:underline">
+                                                <span className="flex items-center gap-0.5 font-medium text-[10px] text-neutral-400 group-hover:text-white">
                                                     Play <Icon icon="mdi:chevron-right" width={10} />
                                                 </span>
                                             </div>
@@ -489,12 +489,12 @@ export function Games() {
                             })}
                         </div>
                     ) : (
-                        <div className="flex flex-col justify-center items-center space-y-3 py-12 text-white/40">
-                            <Icon icon="mdi:gamepad-circle-down" width={48} className="text-white/20 animate-pulse" />
+                        <div className="flex flex-col justify-center items-center space-y-2 py-12 text-neutral-500">
+                            <Icon icon="mdi:gamepad-circle-down" width={36} className="text-neutral-600" />
                             <div className="text-center">
-                                <p className="font-semibold text-sm">No games found</p>
-                                <p className="mt-1 text-white/30 text-xs">
-                                    Try checking your search query or choosing another category.
+                                <p className="font-medium text-xs text-neutral-400">No results</p>
+                                <p className="mt-0.5 text-neutral-500 text-[11px]">
+                                    Try a different search term or category.
                                 </p>
                             </div>
                         </div>
@@ -503,9 +503,9 @@ export function Games() {
                     {visibleCount < filteredGames.length && (
                         <button
                             onClick={() => setVisibleCount((prev) => prev + ITEMS_PER_PAGE)}
-                            className="bg-white/5 hover:bg-white/10 active:bg-white/15 mt-4 py-2.5 border border-white/5 rounded-xl w-full font-sans font-semibold text-white/70 hover:text-white text-xs text-center transition-all cursor-pointer"
+                            className="bg-white/[0.04] hover:bg-white/[0.08] mt-4 py-2 border border-white/10 rounded-lg w-full font-medium text-neutral-300 text-xs text-center transition-all cursor-pointer"
                         >
-                            Load More Games ({filteredGames.length - visibleCount} remaining)
+                            Load More ({filteredGames.length - visibleCount} left)
                         </button>
                     )}
                 </div>

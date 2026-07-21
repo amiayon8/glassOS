@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FaChevronLeft, FaChevronRight, FaPlus, FaTrash, FaPen, FaClock, FaTag, FaCheck, FaXmark } from "react-icons/fa6";
+import { FaChevronLeft, FaChevronRight, FaPlus, FaTrash, FaPen, FaClock, FaCheck, FaXmark } from "react-icons/fa6";
 
 interface CalendarEvent {
   id: string;
@@ -14,10 +14,10 @@ interface CalendarEvent {
 }
 
 const CATEGORIES = {
-  work: { label: "Work", color: "bg-blue-500", text: "text-blue-400", border: "border-blue-500/30", badge: "bg-blue-500/10 text-blue-300 border-blue-500/20" },
-  personal: { label: "Personal", color: "bg-emerald-500", text: "text-emerald-400", border: "border-emerald-500/30", badge: "bg-emerald-500/10 text-emerald-300 border-emerald-500/20" },
-  urgent: { label: "Urgent", color: "bg-rose-500", text: "text-rose-400", border: "border-rose-500/30", badge: "bg-rose-500/10 text-rose-300 border-rose-500/20" },
-  social: { label: "Social", color: "bg-purple-500", text: "text-purple-400", border: "border-purple-500/30", badge: "bg-purple-500/10 text-purple-300 border-purple-500/20" },
+  work: { label: "Work", color: "bg-sky-400", text: "text-sky-400", border: "border-sky-500/20", badge: "bg-sky-400/10 text-sky-300 border-sky-400/20" },
+  personal: { label: "Personal", color: "bg-emerald-400", text: "text-emerald-400", border: "border-emerald-500/20", badge: "bg-emerald-400/10 text-emerald-300 border-emerald-400/20" },
+  urgent: { label: "Urgent", color: "bg-amber-400", text: "text-amber-400", border: "border-amber-500/20", badge: "bg-amber-400/10 text-amber-300 border-amber-400/20" },
+  social: { label: "Social", color: "bg-purple-400", text: "text-purple-400", border: "border-purple-500/20", badge: "bg-purple-400/10 text-purple-300 border-purple-400/20" },
 };
 
 const MONTHS = [
@@ -67,31 +67,31 @@ export default function CalendarApp() {
 
         const mockEvents: CalendarEvent[] = [
           {
-            id: "mock-1",
-            title: "Welcome to Calendar!",
+            id: "ev-1",
+            title: "Project Sync",
             date: todayStr,
             startTime: "10:00",
             endTime: "11:30",
-            category: "personal",
-            description: "Manage your scheduling directly inside GlassOS! Events are saved to your localStorage."
+            category: "work",
+            description: "Catch up with the team on app features."
           },
           {
-            id: "mock-2",
-            title: "Design Review Meetings",
+            id: "ev-2",
+            title: "Doctor Appointment",
             date: tomorrowStr,
             startTime: "14:00",
             endTime: "15:00",
-            category: "work",
-            description: "Review desktop widgets layout and glassmorphism styling parameters."
+            category: "personal",
+            description: "Routine checkup at the clinic."
           },
           {
-            id: "mock-3",
-            title: "Finish GlassOS Calculator",
+            id: "ev-3",
+            title: "Finish Assignment",
             date: todayStr,
             startTime: "16:00",
             endTime: "17:30",
             category: "urgent",
-            description: "Complete mathematical formula mappings and test Standard/Scientific view changes."
+            description: "Complete assignment due tonight."
           }
         ];
         setEvents(mockEvents);
@@ -100,61 +100,66 @@ export default function CalendarApp() {
     }
   }, []);
 
-  const saveEvents = (updatedEvents: CalendarEvent[]) => {
+  const saveEventsToStorage = (updatedEvents: CalendarEvent[]) => {
     setEvents(updatedEvents);
     if (typeof window !== "undefined") {
       localStorage.setItem("glassos_calendar_events", JSON.stringify(updatedEvents));
     }
   };
 
-  const prevMonth = () => {
+  const handlePrevMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth - 1, 1));
   };
 
-  const nextMonth = () => {
+  const handleNextMonth = () => {
     setCurrentDate(new Date(currentYear, currentMonth + 1, 1));
   };
 
-  const jumpToToday = () => {
-    const today = new Date();
-    setCurrentDate(today);
-    setSelectedDate(today);
+  const handleToday = () => {
+    const now = new Date();
+    setCurrentDate(new Date(now.getFullYear(), now.getMonth(), 1));
+    setSelectedDate(now);
   };
 
-  const getDaysGrid = () => {
-    const grid = [];
-    const daysInCurMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
-    const firstDayIdx = new Date(currentYear, currentMonth, 1).getDay();
-
-    for (let i = firstDayIdx - 1; i >= 0; i--) {
-      const d = new Date(currentYear, currentMonth - 1, daysInPrevMonth - i);
-      grid.push({ date: d, isCurrentMonth: false });
-    }
-
-    for (let i = 1; i <= daysInCurMonth; i++) {
-      const d = new Date(currentYear, currentMonth, i);
-      grid.push({ date: d, isCurrentMonth: true });
-    }
-
-    const remaining = 42 - grid.length;
-    for (let i = 1; i <= remaining; i++) {
-      const d = new Date(currentYear, currentMonth + 1, i);
-      grid.push({ date: d, isCurrentMonth: false });
-    }
-
-    return grid;
+  const getDaysInMonth = (year: number, month: number) => {
+    return new Date(year, month + 1, 0).getDate();
   };
 
-  const dayCells = getDaysGrid();
-  const selectedDateStr = formatDateString(selectedDate);
-  const selectedDayEvents = events
-    .filter((e) => e.date === selectedDateStr)
-    .sort((a, b) => a.startTime.localeCompare(b.startTime));
+  const getFirstDayOfWeek = (year: number, month: number) => {
+    return new Date(year, month, 1).getDay();
+  };
+
+  const buildCalendarGrid = () => {
+    const daysInMonth = getDaysInMonth(currentYear, currentMonth);
+    const firstDayIndex = getFirstDayOfWeek(currentYear, currentMonth);
+    const prevMonthDays = getDaysInMonth(currentYear, currentMonth - 1);
+
+    const cells: { date: Date; isCurrentMonth: boolean }[] = [];
+
+    for (let i = firstDayIndex - 1; i >= 0; i--) {
+      const d = new Date(currentYear, currentMonth - 1, prevMonthDays - i);
+      cells.push({ date: d, isCurrentMonth: false });
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const date = new Date(currentYear, currentMonth, d);
+      cells.push({ date, isCurrentMonth: true });
+    }
+
+    const remaining = 42 - cells.length;
+    for (let d = 1; d <= remaining; d++) {
+      const date = new Date(currentYear, currentMonth + 1, d);
+      cells.push({ date, isCurrentMonth: false });
+    }
+
+    return cells;
+  };
 
   const handleSaveEvent = (e: React.FormEvent) => {
     e.preventDefault();
     if (!eventTitle.trim()) return;
+
+    const dateStr = formatDateString(selectedDate);
 
     if (editingEventId) {
       const updated = events.map((ev) =>
@@ -169,27 +174,29 @@ export default function CalendarApp() {
           }
           : ev
       );
-      saveEvents(updated);
-      setEditingEventId(null);
+      saveEventsToStorage(updated);
     } else {
       const newEv: CalendarEvent = {
-        id: Math.random().toString(36).substring(2, 9),
+        id: "ev-" + Date.now(),
         title: eventTitle,
-        date: selectedDateStr,
+        date: dateStr,
         startTime: eventStartTime,
         endTime: eventEndTime,
         category: eventCategory,
         description: eventDescription,
       };
-      saveEvents([...events, newEv]);
+      saveEventsToStorage([...events, newEv]);
     }
 
-    setEventTitle("");
-    setEventStartTime("09:00");
-    setEventEndTime("10:00");
-    setEventCategory("work");
-    setEventDescription("");
     setIsAddingEvent(false);
+    setEditingEventId(null);
+    setEventTitle("");
+    setEventDescription("");
+  };
+
+  const handleDeleteEvent = (id: string) => {
+    const updated = events.filter((e) => e.id !== id);
+    saveEventsToStorage(updated);
   };
 
   const handleStartEdit = (ev: CalendarEvent) => {
@@ -202,52 +209,46 @@ export default function CalendarApp() {
     setIsAddingEvent(true);
   };
 
-  const handleDeleteEvent = (id: string) => {
-    const filtered = events.filter((e) => e.id !== id);
-    saveEvents(filtered);
-    if (editingEventId === id) {
-      setEditingEventId(null);
-      setIsAddingEvent(false);
-    }
-  };
+  const selectedDateStr = formatDateString(selectedDate);
+  const selectedDayEvents = events.filter((e) => e.date === selectedDateStr);
+  const dayCells = buildCalendarGrid();
 
   return (
-    <div className="flex md:flex-row flex-col gap-4 p-4 h-full overflow-hidden text-white calendar-container">
-      <div className="flex flex-col flex-1 bg-zinc-900/30 backdrop-blur-md p-4 border border-white/10 rounded-2xl overflow-y-auto no-scrollbar">
-        <div className="flex justify-between items-center gap-2 mb-4">
-          <div className="flex flex-col">
-            <h2 className="font-bold text-white text-xl tracking-tight">
-              {MONTHS[currentMonth]} {currentYear}
+    <div className="h-full flex flex-col md:flex-row gap-4 p-4 text-white overflow-y-auto no-scrollbar">
+      <div className="flex flex-col flex-1 bg-zinc-950/60 backdrop-blur-xl border border-white/[0.08] rounded-xl p-4 min-w-0">
+        <div className="flex justify-between items-center mb-4 pb-3 border-b border-white/[0.08]">
+          <div className="flex items-baseline gap-2">
+            <h2 className="text-xl font-medium tracking-tight text-white">
+              {MONTHS[currentMonth]}
             </h2>
-            <span className="text-zinc-400 text-xs">
-              Selected: {selectedDate.toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-            </span>
+            <span className="text-sm font-mono text-neutral-400">{currentYear}</span>
           </div>
-          <div className="flex items-center gap-2">
+
+          <div className="flex items-center gap-1.5">
             <button
-              onClick={jumpToToday}
-              className="bg-white/5 hover:bg-white/10 px-3 py-1.5 border border-white/10 rounded-lg font-semibold text-xs transition-all"
+              onClick={handleToday}
+              className="px-2.5 py-1 text-xs font-medium bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 rounded-md transition-all active:scale-95 text-neutral-300"
             >
               Today
             </button>
-            <div className="flex bg-black/30 p-0.5 border border-white/5 rounded-lg">
+            <div className="flex items-center bg-white/[0.04] border border-white/10 rounded-md p-0.5">
               <button
-                onClick={prevMonth}
-                className="hover:bg-white/5 p-2 rounded text-zinc-400 hover:text-white transition-all"
+                onClick={handlePrevMonth}
+                className="p-1 hover:bg-white/10 rounded text-neutral-400 hover:text-white transition-all"
               >
-                <FaChevronLeft size={12} />
+                <FaChevronLeft size={11} />
               </button>
               <button
-                onClick={nextMonth}
-                className="hover:bg-white/5 p-2 rounded text-zinc-400 hover:text-white transition-all"
+                onClick={handleNextMonth}
+                className="p-1 hover:bg-white/10 rounded text-neutral-400 hover:text-white transition-all"
               >
-                <FaChevronRight size={12} />
+                <FaChevronRight size={11} />
               </button>
             </div>
           </div>
         </div>
 
-        <div className="gap-1 grid grid-cols-7 mb-2 py-1 border-white/5 border-b font-medium text-zinc-400 text-xs text-center">
+        <div className="grid grid-cols-7 mb-2 py-1 border-b border-white/[0.06] text-xs font-medium text-neutral-400 text-center uppercase tracking-wider">
           {WEEKDAYS.map((day) => (
             <div key={day} className="py-1">
               {day}
@@ -271,15 +272,15 @@ export default function CalendarApp() {
                     setCurrentDate(new Date(date.getFullYear(), date.getMonth(), 1));
                   }
                 }}
-                className={`calendar-cell flex flex-col items-center justify-between p-1.5 rounded-xl border transition-all text-left relative group min-h-[46px] select-none cursor-pointer ${isCurrentMonth ? "text-white" : "text-zinc-500"
+                className={`calendar-cell flex flex-col items-center justify-between p-1.5 rounded-lg border transition-all text-left relative group min-h-[46px] select-none cursor-pointer ${isCurrentMonth ? "text-neutral-200" : "text-neutral-600"
                   } ${isSelected
-                    ? "bg-white/15 border-white/30 shadow-md translate-y-[-1px]"
+                    ? "bg-white/[0.12] border-white/25 shadow-md"
                     : isToday
-                      ? "bg-blue-600/10 border-blue-500/40 text-blue-300"
-                      : "bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10"
+                      ? "bg-sky-400/10 border-sky-400/30 text-sky-300"
+                      : "bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.06] hover:border-white/10"
                   }`}
               >
-                <span className={`text-sm font-semibold relative ${isToday ? "underline decoration-2" : ""}`}>
+                <span className={`text-xs font-medium relative ${isToday ? "font-semibold text-sky-400" : ""}`}>
                   {date.getDate()}
                 </span>
 
@@ -287,11 +288,11 @@ export default function CalendarApp() {
                   {dayEvents.slice(0, 3).map((e) => (
                     <span
                       key={e.id}
-                      className={`w-1.5 h-1.5 rounded-full ${CATEGORIES[e.category]?.color || "bg-zinc-400"}`}
+                      className={`w-1.5 h-1.5 rounded-full ${CATEGORIES[e.category]?.color || "bg-neutral-400"}`}
                     />
                   ))}
                   {dayEvents.length > 3 && (
-                    <span className="-mt-1 font-bold text-[8px] text-zinc-400">+</span>
+                    <span className="-mt-1 font-bold text-[8px] text-neutral-400">+</span>
                   )}
                 </div>
               </button>
@@ -300,13 +301,12 @@ export default function CalendarApp() {
         </div>
       </div>
 
-      <div className="flex flex-col bg-zinc-900/30 backdrop-blur-md p-4 border border-white/10 rounded-2xl w-full md:w-80 overflow-hidden shrink-0">
-
+      <div className="flex flex-col bg-zinc-950/60 backdrop-blur-xl p-4 border border-white/[0.08] rounded-xl w-full md:w-80 overflow-hidden shrink-0">
         {isAddingEvent ? (
           <form onSubmit={handleSaveEvent} className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
-            <div className="flex justify-between items-center mb-4 pb-2 border-white/5 border-b">
-              <h3 className="font-bold text-white text-lg">
-                {editingEventId ? "Edit Event" : "Create Event"}
+            <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/[0.08]">
+              <h3 className="font-medium text-white text-base">
+                {editingEventId ? "Edit Event" : "New Event"}
               </h3>
               <button
                 type="button"
@@ -315,59 +315,59 @@ export default function CalendarApp() {
                   setEditingEventId(null);
                   setEventTitle("");
                 }}
-                className="hover:bg-white/10 p-1 rounded text-zinc-400 hover:text-white transition-all"
+                className="hover:bg-white/10 p-1 rounded text-neutral-400 hover:text-white transition-all"
               >
-                <FaXmark size={16} />
+                <FaXmark size={14} />
               </button>
             </div>
 
             <div className="flex flex-col flex-1 gap-3">
               <div>
-                <label className="block mb-1 font-semibold text-zinc-400 text-xs">Title</label>
+                <label className="block mb-1 font-medium text-neutral-400 text-xs">Title</label>
                 <input
                   type="text"
                   required
-                  placeholder="Event title..."
+                  placeholder="Event title"
                   value={eventTitle}
                   onChange={(e) => setEventTitle(e.target.value)}
-                  className="bg-white/5 px-3 py-2 border border-white/10 focus:border-white/20 rounded-xl focus:outline-none w-full text-white text-sm placeholder-zinc-500"
+                  className="bg-white/[0.04] px-3 py-2 border border-white/10 focus:border-white/20 rounded-lg focus:outline-none w-full text-white text-xs placeholder-neutral-500"
                 />
               </div>
 
               <div className="flex gap-2">
                 <div className="flex-1">
-                  <label className="block mb-1 font-semibold text-zinc-400 text-xs">Start Time</label>
+                  <label className="block mb-1 font-medium text-neutral-400 text-xs">Start Time</label>
                   <input
                     type="time"
                     required
                     value={eventStartTime}
                     onChange={(e) => setEventStartTime(e.target.value)}
-                    className="bg-white/5 px-3 py-2 border border-white/10 focus:border-white/20 rounded-xl focus:outline-none w-full text-white text-sm"
+                    className="bg-white/[0.04] px-2.5 py-2 border border-white/10 focus:border-white/20 rounded-lg focus:outline-none w-full text-white text-xs"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="block mb-1 font-semibold text-zinc-400 text-xs">End Time</label>
+                  <label className="block mb-1 font-medium text-neutral-400 text-xs">End Time</label>
                   <input
                     type="time"
                     required
                     value={eventEndTime}
                     onChange={(e) => setEventEndTime(e.target.value)}
-                    className="bg-white/5 px-3 py-2 border border-white/10 focus:border-white/20 rounded-xl focus:outline-none w-full text-white text-sm"
+                    className="bg-white/[0.04] px-2.5 py-2 border border-white/10 focus:border-white/20 rounded-lg focus:outline-none w-full text-white text-xs"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1 font-semibold text-zinc-400 text-xs">Category</label>
-                <div className="gap-2 grid grid-cols-2">
+                <label className="block mb-1 font-medium text-neutral-400 text-xs">Category</label>
+                <div className="gap-1.5 grid grid-cols-2">
                   {(Object.keys(CATEGORIES) as Array<keyof typeof CATEGORIES>).map((cat) => (
                     <button
                       key={cat}
                       type="button"
                       onClick={() => setEventCategory(cat)}
-                      className={`flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium rounded-xl border text-left cursor-pointer transition-all ${eventCategory === cat
-                        ? "bg-white/10 border-white/20 text-white font-semibold"
-                        : "bg-white/5 border-transparent text-zinc-400 hover:bg-white/10 hover:text-zinc-200"
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg border text-left cursor-pointer transition-all ${eventCategory === cat
+                        ? "bg-white/10 border-white/20 text-white"
+                        : "bg-white/[0.02] border-transparent text-neutral-400 hover:bg-white/[0.06] hover:text-neutral-200"
                         }`}
                     >
                       <span className={`w-2 h-2 rounded-full ${CATEGORIES[cat].color}`} />
@@ -377,29 +377,32 @@ export default function CalendarApp() {
                 </div>
               </div>
 
-              <div className="flex flex-col flex-1 min-h-[90px]">
-                <label className="block mb-1 font-semibold text-zinc-400 text-xs">Description</label>
+              <div className="flex flex-col flex-1 min-h-[80px]">
+                <label className="block mb-1 font-medium text-neutral-400 text-xs">Description</label>
                 <textarea
-                  placeholder="Notes, locations, description..."
+                  placeholder="Add notes..."
                   value={eventDescription}
                   onChange={(e) => setEventDescription(e.target.value)}
-                  className="flex-1 bg-white/5 px-3 py-2 border border-white/10 focus:border-white/20 rounded-xl focus:outline-none w-full min-h-[80px] text-white text-sm resize-none placeholder-zinc-500"
+                  className="flex-1 bg-white/[0.04] px-3 py-2 border border-white/10 focus:border-white/20 rounded-lg focus:outline-none w-full min-h-[70px] text-white text-xs resize-none placeholder-neutral-500"
                 />
               </div>
             </div>
 
             <button
               type="submit"
-              className="flex justify-center items-center gap-2 bg-blue-600 hover:bg-blue-500 shadow-md mt-4 px-4 py-2.5 border border-blue-500/20 rounded-xl w-full font-semibold text-white active:scale-95 transition-all"
+              className="flex justify-center items-center gap-1.5 bg-white text-zinc-950 hover:bg-neutral-200 shadow-sm mt-4 px-4 py-2 rounded-lg w-full font-medium text-xs active:scale-[0.98] transition-all cursor-pointer"
             >
-              <FaCheck size={12} />
+              <FaCheck size={11} />
               Save Event
             </button>
           </form>
         ) : (
           <div className="flex flex-col flex-1 overflow-hidden">
-            <div className="flex justify-between items-center mb-4 pb-2 border-white/5 border-b">
-              <h3 className="font-bold text-white text-lg">Events</h3>
+            <div className="flex justify-between items-center mb-4 pb-2 border-b border-white/[0.08]">
+              <div>
+                <h3 className="font-medium text-white text-base">Agenda</h3>
+                <p className="text-[11px] text-neutral-400">{selectedDate.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}</p>
+              </div>
               <button
                 onClick={() => {
                   setEventTitle("");
@@ -410,7 +413,7 @@ export default function CalendarApp() {
                   setEditingEventId(null);
                   setIsAddingEvent(true);
                 }}
-                className="flex items-center gap-1 bg-blue-600 hover:bg-blue-500 shadow-sm px-3 py-1.5 border border-blue-500/20 rounded-lg font-semibold text-white text-xs active:scale-95 transition-all cursor-pointer"
+                className="flex items-center gap-1 bg-white text-zinc-950 hover:bg-neutral-200 px-3 py-1.5 rounded-lg font-medium text-xs active:scale-[0.98] transition-all cursor-pointer"
               >
                 <FaPlus size={10} /> Add
               </button>
@@ -419,27 +422,27 @@ export default function CalendarApp() {
             <div className="flex flex-col flex-1 gap-2 overflow-y-auto no-scrollbar">
               {selectedDayEvents.length === 0 ? (
                 <div className="flex flex-col flex-1 justify-center items-center p-4 text-center">
-                  <span className="text-zinc-500 text-sm italic">No events scheduled.</span>
+                  <span className="text-neutral-500 text-xs">No events scheduled.</span>
                   <button
                     onClick={() => setIsAddingEvent(true)}
-                    className="mt-2 font-medium text-blue-400 text-xs hover:underline"
+                    className="mt-2 font-medium text-sky-400 text-xs hover:underline cursor-pointer"
                   >
-                    Schedule an event now
+                    Add an event
                   </button>
                 </div>
               ) : (
                 selectedDayEvents.map((ev) => (
                   <div
                     key={ev.id}
-                    className={`p-3 bg-white/5 border rounded-xl flex flex-col gap-2 group hover:bg-white/10 hover:border-white/20 transition-all ${CATEGORIES[ev.category]?.border || "border-white/5"
+                    className={`p-3 bg-white/[0.03] border rounded-lg flex flex-col gap-1.5 group hover:bg-white/[0.06] hover:border-white/15 transition-all ${CATEGORIES[ev.category]?.border || "border-white/[0.08]"
                       }`}
                   >
                     <div className="flex justify-between items-start gap-2">
                       <div className="flex flex-col min-w-0">
-                        <span className="font-bold text-zinc-100 text-sm truncate">
+                        <span className="font-medium text-neutral-100 text-xs truncate">
                           {ev.title}
                         </span>
-                        <div className="flex items-center gap-1.5 mt-1 text-zinc-400 text-xs">
+                        <div className="flex items-center gap-1 mt-0.5 text-neutral-400 text-[11px]">
                           <FaClock size={10} className="shrink-0" />
                           <span>
                             {ev.startTime} - {ev.endTime}
@@ -449,13 +452,13 @@ export default function CalendarApp() {
                       <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => handleStartEdit(ev)}
-                          className="hover:bg-white/10 p-1.5 rounded text-zinc-400 hover:text-white transition-all"
+                          className="hover:bg-white/10 p-1 rounded text-neutral-400 hover:text-white transition-all"
                         >
                           <FaPen size={10} />
                         </button>
                         <button
                           onClick={() => handleDeleteEvent(ev.id)}
-                          className="hover:bg-red-500/20 p-1.5 rounded text-zinc-400 hover:text-red-400 transition-all"
+                          className="hover:bg-red-500/20 p-1 rounded text-neutral-400 hover:text-red-400 transition-all"
                         >
                           <FaTrash size={10} />
                         </button>
@@ -463,13 +466,13 @@ export default function CalendarApp() {
                     </div>
 
                     {ev.description && (
-                      <p className="mt-1 pt-2 border-white/5 border-t text-zinc-400 text-xs line-clamp-3">
+                      <p className="mt-0.5 pt-1.5 border-t border-white/[0.05] text-neutral-400 text-[11px] line-clamp-2">
                         {ev.description}
                       </p>
                     )}
 
-                    <div className="flex items-center gap-1.5 mt-1.5">
-                      <span className={`px-2 py-0.5 text-[9px] font-bold tracking-wide uppercase border rounded-full ${CATEGORIES[ev.category]?.badge
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      <span className={`px-2 py-0.5 text-[10px] font-medium tracking-wide border rounded-md ${CATEGORIES[ev.category]?.badge
                         }`}>
                         {CATEGORIES[ev.category]?.label}
                       </span>
@@ -481,7 +484,6 @@ export default function CalendarApp() {
           </div>
         )}
       </div>
-
     </div>
   );
 }
