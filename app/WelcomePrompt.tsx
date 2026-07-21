@@ -24,35 +24,31 @@ export default function WelcomePrompt() {
   if (!show) return null;
 
   return (
-    <div className="z-[9998] fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+    <div className="z-[9998] fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm p-4 animate-in duration-200 fade-in">
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative bg-zinc-950/80 backdrop-blur-xl border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl p-7 flex flex-col"
+        className="relative flex flex-col bg-zinc-950/80 shadow-2xl backdrop-blur-xl p-7 border border-white/10 rounded-2xl w-full max-w-md overflow-hidden"
       >
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
-          <span className="text-xs font-mono uppercase tracking-widest text-neutral-400">GlassOS</span>
-        </div>
 
-        <h2 className="text-xl font-medium tracking-tight text-white mb-2">
+        <h2 className="mb-2 font-medium text-white text-xl tracking-tight">
           Welcome to GlassOS
         </h2>
 
-        <p className="text-xs leading-relaxed text-neutral-400 mb-6">
+        <p className="mb-6 text-neutral-400 text-xs leading-relaxed">
           Open in fullscreen for the best desktop experience.
         </p>
 
         <div className="flex items-center gap-2.5">
           <button
             onClick={openFullscreen}
-            className="flex-1 bg-white text-zinc-950 hover:bg-neutral-200 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-150 active:scale-[0.98]"
+            className="flex-1 bg-white hover:bg-neutral-200 px-3.5 py-2 rounded-lg font-medium text-zinc-950 text-xs active:scale-[0.98] transition-all duration-150"
           >
             Enter Fullscreen
           </button>
 
           <button
             onClick={close}
-            className="px-3.5 py-2 bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 rounded-lg text-xs font-medium text-neutral-300 transition-all duration-150 active:scale-[0.98]"
+            className="bg-white/[0.04] hover:bg-white/[0.08] px-3.5 py-2 border border-white/10 rounded-lg font-medium text-neutral-300 text-xs active:scale-[0.98] transition-all duration-150"
           >
             Continue in Window
           </button>
